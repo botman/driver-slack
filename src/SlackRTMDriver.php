@@ -2,6 +2,7 @@
 
 namespace BotMan\Drivers\Slack;
 
+use BotMan\BotMan\BotManFactory;
 use Slack\File;
 use Slack\RealTimeClient;
 use BotMan\BotMan\Users\User;
@@ -352,5 +353,16 @@ class SlackRTMDriver implements DriverInterface
     public function serializesCallbacks()
     {
         return false;
+    }
+
+    /**
+     * Load factory extensions.
+     */
+    public static function loadExtension()
+    {
+        $factory = new Factory();
+
+        BotManFactory::extend('createForRTM', [$factory, 'createForRTM']);
+        BotManFactory::extend('createUsingRTM', [$factory, 'createUsingRTM']);
     }
 }
