@@ -1,0 +1,8 @@
+{
+    "botman/driver-config": [
+        "stubs/slack.php"
+    ],
+    "botman/driver": [
+        "BotMan\\Drivers\\Slack\\SlackDriver"
+    ]
+}
