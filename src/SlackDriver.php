@@ -12,6 +12,7 @@ use BotMan\BotMan\Messages\Attachments\Image;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
@@ -187,7 +188,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
             return $this->http->post('https://slack.com/api/chat.postMessage', [], $payload);
         }
 
-        return Response::create(json_encode($payload), 200, ['Content-Type', 'application/json'])->send();
+        return JsonResponse::create($payload)->send();
     }
 
     /**
