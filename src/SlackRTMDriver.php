@@ -145,10 +145,6 @@ class SlackRTMDriver implements DriverInterface
      */
     public function getMessages()
     {
-        if ($this->hasMatchingEvent() !== false) {
-            return [];
-        }
-
         $messageText = $this->event->get('text');
         $user_id = $this->event->get('user');
         $channel_id = $this->event->get('channel');
