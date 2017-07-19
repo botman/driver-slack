@@ -6,6 +6,8 @@ use React\EventLoop\Factory;
 use Illuminate\Console\Command;
 use BotMan\BotMan\BotManFactory;
 use BotMan\BotMan\Cache\ArrayCache;
+use BotMan\BotMan\Drivers\DriverManager;
+use BotMan\Drivers\Slack\SlackRTMDriver;
 
 class SlackRTMListenCommand extends Command
 {
@@ -35,6 +37,7 @@ class SlackRTMListenCommand extends Command
         $loop = Factory::create();
 
         $app->singleton('botman', function ($app) use ($loop) {
+            DriverManager::loadDriver(SlackRTMDriver::class);
             return BotManFactory::createForRTM(config('botman', []), $loop, new ArrayCache());
         });
 
