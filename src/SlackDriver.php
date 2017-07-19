@@ -32,6 +32,8 @@ class SlackDriver extends HttpDriver implements VerifiesService
      */
     public function buildPayload(Request $request)
     {
+        $this->config = Collection::make($this->config->get('slack', []));
+
         /*
          * If the request has a POST parameter called 'payload'
          * we're dealing with an interactive button response.
@@ -247,6 +249,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
     protected function replyWithToken($message, $matchingMessage, $additionalParameters = [])
     {
         $parameters = array_merge_recursive([
+            'as_user' => true,
             'token' => $this->payload->get('token'),
             'channel' => $matchingMessage->getRecipient() === '' ? $matchingMessage->getSender() : $matchingMessage->getRecipient(),
         ], $additionalParameters);
@@ -269,7 +272,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
             $parameters['text'] = $this->format($message);
         }
 
-        $parameters['token'] = $this->config->get('slack_token');
+        $parameters['token'] = $this->config->get('token');
 
         return $parameters;
     }
@@ -294,7 +297,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
      */
     public function isConfigured()
     {
-        return ! empty($this->config->get('slack_token'));
+        return ! empty($this->config->get('token'));
     }
 
     /**
@@ -327,7 +330,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
     public function sendRequest($endpoint, array $parameters, IncomingMessage $matchingMessage)
     {
         $parameters = array_replace_recursive([
-            'token' => $this->config->get('slack_token'),
+            'token' => $this->config->get('token'),
         ], $parameters);
 
         return $this->http->post('https://slack.com/api/'.$endpoint, [], $parameters);

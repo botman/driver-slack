@@ -200,7 +200,9 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $request->shouldReceive('getContent')->andReturn(json_encode($responseData));
 
         $driver = new SlackDriver($request, [
-            'slack_token' => 'Foo',
+            'slack' => [
+                'token' => 'Foo',
+            ],
         ], $html);
 
         $message = $driver->getMessages()[0];
@@ -377,6 +379,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $html->shouldReceive('post')
             ->once()
             ->with('https://slack.com/api/chat.postMessage', [], [
+                'as_user' => true,
                 'token' => 'Foo',
                 'channel' => 'general',
                 'text' => 'Test',
@@ -386,7 +389,9 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $request->shouldReceive('getContent')->andReturn(json_encode($responseData));
 
         $driver = new SlackDriver($request, [
-            'slack_token' => 'Foo',
+            'slack' => [
+                'token' => 'Foo',
+            ],
         ], $html);
 
         $user_id = 'general';
@@ -410,6 +415,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $html->shouldReceive('post')
             ->once()
             ->with('https://slack.com/api/chat.postMessage', [], [
+                'as_user' => true,
                 'token' => 'Foo',
                 'channel' => 'general',
                 'text' => 'Test',
@@ -419,7 +425,9 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $request->shouldReceive('getContent')->andReturn(json_encode($responseData));
 
         $driver = new SlackDriver($request, [
-            'slack_token' => 'Foo',
+            'slack' => [
+                'token' => 'Foo',
+            ]
         ], $html);
 
         $message = new IncomingMessage('', 'U0X12345', 'general');
@@ -441,6 +449,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $html->shouldReceive('post')
             ->once()
             ->with('https://slack.com/api/chat.postMessage', [], [
+                'as_user' => true,
                 'token' => 'Foo',
                 'channel' => 'general',
                 'text' => 'Test',
@@ -450,7 +459,9 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $request->shouldReceive('getContent')->andReturn(json_encode($responseData));
 
         $driver = new SlackDriver($request, [
-            'slack_token' => 'Foo',
+            'slack' => [
+                'token' => 'Foo',
+            ],
         ], $html);
 
         $message = new IncomingMessage('', 'U0X12345', 'general');
@@ -472,6 +483,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $html->shouldReceive('post')
             ->once()
             ->with('https://slack.com/api/chat.postMessage', [], [
+                'as_user' => true,
                 'token' => 'Foo',
                 'channel' => 'general',
                 'text' => 'Test',
@@ -482,7 +494,9 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $request->shouldReceive('getContent')->andReturn(json_encode($responseData));
 
         $driver = new SlackDriver($request, [
-            'slack_token' => 'Foo',
+            'slack' => [
+                'token' => 'Foo',
+            ]
         ], $html);
 
         $message = new IncomingMessage('', 'U0X12345', 'general');
@@ -547,6 +561,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $html->shouldReceive('post')
             ->once()
             ->with('https://slack.com/api/chat.postMessage', [], [
+                'as_user' => true,
                 'token' => 'Foo',
                 'channel' => 'general',
                 'text' => '',
@@ -557,7 +572,9 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $request->shouldReceive('getContent')->andReturn(json_encode($responseData));
 
         $driver = new SlackDriver($request, [
-            'slack_token' => 'Foo',
+            'slack' => [
+                'token' => 'Foo',
+            ],
         ], $html);
 
         $message = new IncomingMessage('', '', 'general');
@@ -583,6 +600,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $html->shouldReceive('post')
             ->once()
             ->with('https://slack.com/api/chat.postMessage', [], [
+                'as_user' => true,
                 'token' => 'Foo',
                 'channel' => 'general',
                 'text' => '',
@@ -593,7 +611,9 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $request->shouldReceive('getContent')->andReturn(json_encode($responseData));
 
         $driver = new SlackDriver($request, [
-            'slack_token' => 'Foo',
+            'slack' => [
+                'token' => 'Foo',
+            ]
         ], $html);
 
         $message = new IncomingMessage('', '', 'general');
@@ -615,6 +635,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $html->shouldReceive('post')
             ->once()
             ->with('https://slack.com/api/chat.postMessage', [], [
+                'as_user' => true,
                 'token' => 'Foo',
                 'channel' => 'general',
                 'text' => 'Test',
@@ -629,7 +650,9 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $request->shouldReceive('getContent')->andReturn(json_encode($responseData));
 
         $driver = new SlackDriver($request, [
-            'slack_token' => 'Foo',
+            'slack' => [
+                'token' => 'Foo',
+            ],
         ], $html);
 
         $message = new IncomingMessage('response', '', 'general');
@@ -658,6 +681,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $html->shouldReceive('post')
             ->once()
             ->with('https://slack.com/api/chat.postMessage', [], [
+                'as_user' => true,
                 'token' => 'Foo',
                 'channel' => 'general',
                 'text' => 'Test',
@@ -673,7 +697,9 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $request->shouldReceive('getContent')->andReturn(json_encode($responseData));
 
         $driver = new SlackDriver($request, [
-            'slack_token' => 'Foo',
+            'slack' => [
+                'token' => 'Foo',
+            ]
         ], $html);
 
         $message = new IncomingMessage('response', '', 'general', Collection::make([
@@ -701,13 +727,17 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $htmlInterface = m::mock(Curl::class);
 
         $driver = new SlackDriver($request, [
-            'slack_token' => 'token',
+            'slack' => [
+                'token' => 'Foo',
+            ],
         ], $htmlInterface);
 
         $this->assertTrue($driver->isConfigured());
 
         $driver = new SlackDriver($request, [
-            'slack_token' => null,
+            'slack' => [
+                'token' => null,
+            ],
         ], $htmlInterface);
 
         $this->assertFalse($driver->isConfigured());
