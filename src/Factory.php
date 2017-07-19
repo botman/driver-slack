@@ -58,16 +58,18 @@ class Factory
             $storageDriver = new FileStorage(__DIR__);
         }
 
-        $client->setToken(Collection::make($config)->get('slack_token'));
+        $config = Collection::make(Collection::make($config)->get('slack', []));
+        $client->setToken($config->get('token'));
 
-        $driver = new SlackRTMDriver($config, $client);
-        $botman = new BotMan($cache, $driver, $config, $storageDriver);
+        $driver = new SlackRTMDriver($config->toArray(), $client);
+        $botman = new BotMan($cache, $driver, $config->toArray(), $storageDriver);
 
         $client->on('_internal_message', function () use ($botman) {
             $botman->listen();
         });
 
         $client->connect()->then(function () use ($driver) {
+            echo "\033[32mSuccessfully connected".PHP_EOL;
             $driver->connected();
         })->otherwise(function (\Exception $e) {
             echo "\033[31mError: ".$e->getMessage().PHP_EOL;
