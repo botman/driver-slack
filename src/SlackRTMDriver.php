@@ -146,8 +146,16 @@ class SlackRTMDriver implements DriverInterface
     public function getMessages()
     {
         $messageText = $this->event->get('text');
+
         $user_id = $this->event->get('user');
+        if (is_array($user_id)) {
+            $user_id = $user_id['id'];
+        }
+
         $channel_id = $this->event->get('channel');
+        if (is_array($channel_id)) {
+            $channel_id = $channel_id['id'];
+        }
 
         if ($this->event->get('subtype') === 'file_share') {
             $file = Collection::make($this->event->get('file'));
