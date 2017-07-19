@@ -69,6 +69,8 @@ class Factory
 
         $client->connect()->then(function () use ($driver) {
             $driver->connected();
+        })->otherwise(function (\Exception $e) {
+            echo "\033[31mError: ".$e->getMessage().PHP_EOL;
         });
 
         return $botman;
