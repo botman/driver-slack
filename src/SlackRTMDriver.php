@@ -2,10 +2,10 @@
 
 namespace BotMan\Drivers\Slack;
 
-use BotMan\BotMan\BotManFactory;
 use Slack\File;
 use Slack\RealTimeClient;
 use BotMan\BotMan\Users\User;
+use BotMan\BotMan\BotManFactory;
 use Illuminate\Support\Collection;
 use React\Promise\PromiseInterface;
 use BotMan\BotMan\Messages\Incoming\Answer;
