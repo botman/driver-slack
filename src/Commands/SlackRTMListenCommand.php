@@ -38,6 +38,7 @@ class SlackRTMListenCommand extends Command
 
         $app->singleton('botman', function ($app) use ($loop) {
             DriverManager::loadDriver(SlackRTMDriver::class);
+
             return BotManFactory::createForRTM(config('botman', []), $loop, new ArrayCache());
         });
 
