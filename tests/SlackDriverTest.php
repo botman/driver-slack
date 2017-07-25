@@ -444,7 +444,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $driver = new SlackDriver($request, [
             'slack' => [
                 'token' => 'Foo',
-            ]
+            ],
         ], $html);
 
         $message = new IncomingMessage('', 'U0X12345', 'general');
@@ -513,7 +513,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $driver = new SlackDriver($request, [
             'slack' => [
                 'token' => 'Foo',
-            ]
+            ],
         ], $html);
 
         $message = new IncomingMessage('', 'U0X12345', 'general');
@@ -630,7 +630,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $driver = new SlackDriver($request, [
             'slack' => [
                 'token' => 'Foo',
-            ]
+            ],
         ], $html);
 
         $message = new IncomingMessage('', '', 'general');
