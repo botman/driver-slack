@@ -716,7 +716,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $driver = new SlackDriver($request, [
             'slack' => [
                 'token' => 'Foo',
-            ]
+            ],
         ], $html);
 
         $message = new IncomingMessage('response', '', 'general', Collection::make([
