@@ -3,6 +3,7 @@
 namespace Tests;
 
 use Slack\File;
+use Slack\User;
 use Mockery as m;
 use Slack\RealTimeClient;
 use React\EventLoop\Factory;
@@ -11,7 +12,6 @@ use React\Promise\FulfilledPromise;
 use BotMan\Drivers\Slack\SlackRTMDriver;
 use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage as OutgoingMessage;
-use Slack\User;
 
 class SlackRTMDriverTest extends PHPUnit_Framework_TestCase
 {
@@ -108,7 +108,7 @@ class SlackRTMDriverTest extends PHPUnit_Framework_TestCase
                 'name' => 'botman',
                 'deleted' => false,
                 'color' => '9f69e7',
-                'profile' =>  [
+                'profile' => [
                     'avatar_hash' => 'ge3b51ca72de',
                     'status_emoji' => ':mountain_railway:',
                     'status_text' => 'riding a train',
