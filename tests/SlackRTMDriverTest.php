@@ -11,6 +11,7 @@ use React\Promise\FulfilledPromise;
 use BotMan\Drivers\Slack\SlackRTMDriver;
 use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage as OutgoingMessage;
+use Slack\User;
 
 class SlackRTMDriverTest extends PHPUnit_Framework_TestCase
 {
@@ -96,6 +97,74 @@ class SlackRTMDriverTest extends PHPUnit_Framework_TestCase
         ]);
 
         $this->assertSame('U0X12345', $driver->getMessages()[0]->getSender());
+    }
+
+    /** @test */
+    public function it_returns_the_user_object()
+    {
+        $responseData = [
+            'user' => [
+                'id' => 'U0X12345',
+                'name' => 'botman',
+                'deleted' => false,
+                'color' => '9f69e7',
+                'profile' =>  [
+                    'avatar_hash' => 'ge3b51ca72de',
+                    'status_emoji' => ':mountain_railway:',
+                    'status_text' => 'riding a train',
+                    'first_name' => 'Bot',
+                    'last_name' => 'Man',
+                    'real_name' => 'Bot Man',
+                    'tz' => 'America\/Los_Angeles',
+                    'tz_label' => 'Pacific Daylight Time',
+                    'tz_offset' => -25200,
+                    'email' => 'botman@foo.bar',
+                    'skype' => 'my-skype-name',
+                    'phone' => '+1 (123) 456 7890',
+                    'image_24' => 'http://via.placeholder.com/24',
+                    'image_32' => 'http://via.placeholder.com/32',
+                    'image_48' => 'http://via.placeholder.com/48',
+                    'image_72' => 'http://via.placeholder.com/72',
+                    'image_192' => 'http://via.placeholder.com/192',
+                ],
+                'is_admin' => true,
+                'is_owner' => true,
+                'is_primary_owner' => true,
+                'updated' => 1490054400,
+                'has_2fa' => true,
+            ],
+            'type' => 'message',
+            'channel' => 'general',
+            'text' => 'response',
+        ];
+
+        $driver = $this->getDriver([
+            'user' => 'U0X12345',
+        ]);
+
+        $user = new User($driver->getClient(), $responseData['user']);
+
+        $this->assertSame('U0X12345', $user->getId());
+        $this->assertSame('Bot', $user->getFirstName());
+        $this->assertSame('Man', $user->getLastName());
+        $this->assertSame('botman', $user->getUsername());
+        $this->assertSame('Bot Man', $user->getRealName());
+        $this->assertSame('botman@foo.bar', $user->getEmail());
+        $this->assertSame('+1 (123) 456 7890', $user->getPhone());
+        $this->assertSame('my-skype-name', $user->getSkype());
+        $this->assertSame(true, $user->isAdmin());
+        $this->assertSame(true, $user->isOwner());
+        $this->assertSame(true, $user->isPrimaryOwner());
+        $this->assertSame(false, $user->isDeleted());
+        $this->assertSame(':mountain_railway:', $user->getStatusEmoji());
+        $this->assertSame('riding a train', $user->getStatusText());
+        $this->assertSame('http://via.placeholder.com/24', $user->getProfileImage24());
+        $this->assertSame('http://via.placeholder.com/32', $user->getProfileImage32());
+        $this->assertSame('http://via.placeholder.com/48', $user->getProfileImage48());
+        $this->assertSame('http://via.placeholder.com/72', $user->getProfileImage72());
+        $this->assertSame('http://via.placeholder.com/192', $user->getProfileImage192());
+        $this->assertSame('9f69e7', $user->getColor());
+        $this->assertSame(1490054400, $user->getUpdated());
     }
 
     /** @test */

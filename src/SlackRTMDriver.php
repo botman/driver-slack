@@ -304,11 +304,11 @@ class SlackRTMDriver implements DriverInterface
         $this->client->getUserById($matchingMessage->getSender())->then(function ($_user) use (&$user) {
             $user = $_user;
         });
-        if (! is_null($user)) {
-            return new User($this->client, [$matchingMessage->getSender()]);
+        if (! is_null($user) && $user instanceof User) {
+            return new User($this->client, $user->getRawUser());
         }
 
-        return new User($matchingMessage->getSender());
+        return new User($this->client, ['id' => $matchingMessage->getSender()]);
     }
 
     /**

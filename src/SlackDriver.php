@@ -315,7 +315,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
 
             return new User(null, $content['user']);
         } catch (\Exception $e) {
-            return new User(null, [$matchingMessage->getSender()]);
+            return new User(null, ['id' => $matchingMessage->getSender()]);
         }
     }
 
