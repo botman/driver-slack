@@ -23,7 +23,7 @@
         "illuminate/console": "~5.0",
         "illuminate/support": "~5.0",
         "mockery/mockery": "dev-master",
-        "mpociot/slack-client": "^0.3.0",
+        "mpociot/slack-client": "^0.3.1",
         "ext-curl": "*"
     },
     "suggest": {

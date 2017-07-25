@@ -3,7 +3,7 @@
 namespace BotMan\Drivers\Slack;
 
 use BotMan\BotMan\BotMan;
-use BotMan\BotMan\Users\User;
+use Slack\User;
 use Illuminate\Support\Collection;
 use BotMan\BotMan\Drivers\HttpDriver;
 use BotMan\BotMan\Messages\Incoming\Answer;
@@ -311,11 +311,11 @@ class SlackDriver extends HttpDriver implements VerifiesService
             'user' => $matchingMessage->getSender(),
         ], $matchingMessage);
         try {
-            $content = json_decode($response->getContent());
+            $content = json_decode($response->getContent(), true);
 
-            return new User($content->user->id, $content->user->profile->first_name, $content->user->profile->last_name, $content->user->name);
+            return new User(null, $content['user']);
         } catch (\Exception $e) {
-            return new User($matchingMessage->getSender());
+            return new User(null, [$matchingMessage->getSender()]);
         }
     }
 

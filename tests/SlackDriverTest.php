@@ -185,7 +185,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
             ],
         ];
 
-        $response = new Response('{"ok":true,"user":{"id":"U0X12345","team_id":"T123456","name":"botman","deleted":false,"color":"9f69e7","real_name":"Bot Man","tz":"Europe\/Amsterdam","tz_label":"Central European Summer Time","tz_offset":7200,"profile":{"first_name":"Bot","last_name":"Man","phone":"","status_emoji":":unicorn_face:","status_text":"","real_name":"Bot Man","real_name_normalized":"Bot Man","email":"botman@foo.bar"},"is_admin":false,"is_owner":false,"is_primary_owner":false,"is_restricted":false,"is_ultra_restricted":false,"is_bot":false,"updated":1493726225}}');
+        $response = new Response('{"ok":true,"user":{"id": "U0X12345","name": "botman","deleted": false,"color": "9f69e7","profile": {"avatar_hash": "ge3b51ca72de","status_emoji": ":mountain_railway:","status_text": "riding a train","first_name": "Bot","last_name": "Man","real_name": "Bot Man","email": "botman@foo.bar","skype": "my-skype-name","phone": "+1 (123) 456 7890","image_24": "http:\/\/via.placeholder.com\/24","image_32": "http:\/\/via.placeholder.com\/32","image_48": "http:\/\/via.placeholder.com\/48","image_72": "http:\/\/via.placeholder.com\/72","image_192": "http:\/\/via.placeholder.com\/192","image_512": "http:\/\/via.placeholder.com\/512"},"is_admin": true, "is_owner": true,"is_primary_owner": true,"is_restricted": false,"is_ultra_restricted": false,"updated": 1490054400,"has_2fa": false,"two_factor_type": "sms"}}');
 
         $html = m::mock(Curl::class);
         $html->shouldReceive('post')
@@ -208,10 +208,27 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $message = $driver->getMessages()[0];
         $user = $driver->getUser($message);
 
-        $this->assertSame($user->getId(), 'U0X12345');
+        $this->assertSame('U0X12345', $user->getId());
         $this->assertSame('Bot', $user->getFirstName());
         $this->assertSame('Man', $user->getLastName());
         $this->assertSame('botman', $user->getUsername());
+        $this->assertSame('Bot Man', $user->getRealName());
+        $this->assertSame('botman@foo.bar', $user->getEmail());
+        $this->assertSame('+1 (123) 456 7890', $user->getPhone());
+        $this->assertSame('my-skype-name', $user->getSkype());
+        $this->assertSame(true, $user->isAdmin());
+        $this->assertSame(true, $user->isOwner());
+        $this->assertSame(true, $user->isPrimaryOwner());
+        $this->assertSame(false, $user->isDeleted());
+        $this->assertSame(':mountain_railway:', $user->getStatusEmoji());
+        $this->assertSame('riding a train', $user->getStatusText());
+        $this->assertSame('http://via.placeholder.com/24', $user->getProfileImage24());
+        $this->assertSame('http://via.placeholder.com/32', $user->getProfileImage32());
+        $this->assertSame('http://via.placeholder.com/48', $user->getProfileImage48());
+        $this->assertSame('http://via.placeholder.com/72', $user->getProfileImage72());
+        $this->assertSame('http://via.placeholder.com/192', $user->getProfileImage192());
+        $this->assertSame('9f69e7', $user->getColor());
+        $this->assertSame(1490054400, $user->getUpdated());
     }
 
     /** @test */
