@@ -3,9 +3,9 @@
 namespace BotMan\Drivers\Slack;
 
 use BotMan\BotMan\BotMan;
-use BotMan\Drivers\Slack\Extensions\User;
 use Illuminate\Support\Collection;
 use BotMan\BotMan\Drivers\HttpDriver;
+use BotMan\Drivers\Slack\Extensions\User;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Interfaces\VerifiesService;
 use BotMan\BotMan\Messages\Attachments\Image;
