@@ -4,10 +4,10 @@ namespace BotMan\Drivers\Slack;
 
 use Slack\File;
 use Slack\RealTimeClient;
-use BotMan\BotMan\Users\User;
 use BotMan\BotMan\BotManFactory;
 use Illuminate\Support\Collection;
 use React\Promise\PromiseInterface;
+use BotMan\Drivers\Slack\Extensions\User;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Interfaces\DriverInterface;
 use BotMan\BotMan\Messages\Attachments\Audio;
@@ -304,12 +304,11 @@ class SlackRTMDriver implements DriverInterface
         $this->client->getUserById($matchingMessage->getSender())->then(function ($_user) use (&$user) {
             $user = $_user;
         });
-        if (! is_null($user)) {
-            return new User($matchingMessage->getSender(), $user->getFirstName(), $user->getLastName(),
-                $user->getUsername());
+        if (! is_null($user) && $user instanceof User) {
+            return new User($this->client, $user->getRawUser());
         }
 
-        return new User($matchingMessage->getSender());
+        return new User($this->client, ['id' => $matchingMessage->getSender()]);
     }
 
     /**
