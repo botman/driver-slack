@@ -2,8 +2,8 @@
 
 namespace BotMan\Drivers\Slack;
 
-use Slack\User;
 use BotMan\BotMan\BotMan;
+use BotMan\Drivers\Slack\Extensions\User;
 use Illuminate\Support\Collection;
 use BotMan\BotMan\Drivers\HttpDriver;
 use BotMan\BotMan\Messages\Incoming\Answer;
