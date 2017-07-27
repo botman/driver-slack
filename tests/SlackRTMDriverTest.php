@@ -3,13 +3,13 @@
 namespace Tests;
 
 use Slack\File;
-use Slack\User;
 use Mockery as m;
 use Slack\RealTimeClient;
 use React\EventLoop\Factory;
 use PHPUnit_Framework_TestCase;
 use React\Promise\FulfilledPromise;
 use BotMan\Drivers\Slack\SlackRTMDriver;
+use BotMan\Drivers\Slack\Extensions\User;
 use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage as OutgoingMessage;
 
@@ -165,6 +165,8 @@ class SlackRTMDriverTest extends PHPUnit_Framework_TestCase
         $this->assertSame('http://via.placeholder.com/192', $user->getProfileImage192());
         $this->assertSame('9f69e7', $user->getColor());
         $this->assertSame(1490054400, $user->getUpdated());
+        $this->assertSame($responseData['user'], $user->getInfo());
+        $this->assertSame($responseData['user'], $user->getRawUser());
     }
 
     /** @test */

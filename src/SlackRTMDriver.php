@@ -3,11 +3,11 @@
 namespace BotMan\Drivers\Slack;
 
 use Slack\File;
-use Slack\User;
 use Slack\RealTimeClient;
 use BotMan\BotMan\BotManFactory;
 use Illuminate\Support\Collection;
 use React\Promise\PromiseInterface;
+use BotMan\Drivers\Slack\Extensions\User;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Interfaces\DriverInterface;
 use BotMan\BotMan\Messages\Attachments\Audio;

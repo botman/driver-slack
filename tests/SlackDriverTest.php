@@ -207,6 +207,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
 
         $message = $driver->getMessages()[0];
         $user = $driver->getUser($message);
+        $rawUserData = json_decode($response->getContent(), true)['user'];
 
         $this->assertSame('U0X12345', $user->getId());
         $this->assertSame('Bot', $user->getFirstName());
@@ -229,6 +230,8 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $this->assertSame('http://via.placeholder.com/192', $user->getProfileImage192());
         $this->assertSame('9f69e7', $user->getColor());
         $this->assertSame(1490054400, $user->getUpdated());
+        $this->assertSame($rawUserData, $user->getInfo());
+        $this->assertSame($rawUserData, $user->getRawUser());
     }
 
     /** @test */
