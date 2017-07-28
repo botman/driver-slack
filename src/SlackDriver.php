@@ -233,8 +233,8 @@ class SlackDriver extends HttpDriver implements VerifiesService
                     $parameters['attachments'] = json_encode([
                         [
                             'title' => $attachment->getTitle(),
-                            'image_url' => $attachment->getUrl()
-                        ]
+                            'image_url' => $attachment->getUrl(),
+                        ],
                     ]);
                 }
             }
