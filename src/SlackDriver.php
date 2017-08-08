@@ -67,7 +67,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
      */
     public function matchesRequest()
     {
-        return !is_null($this->event->get('user')) || !is_null($this->event->get('team_domain')) || !is_null($this->event->get('bot_id'));
+        return ! is_null($this->event->get('user')) || ! is_null($this->event->get('team_domain')) || ! is_null($this->event->get('bot_id'));
     }
 
     /**
@@ -360,14 +360,14 @@ class SlackDriver extends HttpDriver implements VerifiesService
 
     /**
      *
-     * Get bot userID
+     * Get bot userID.
      *
      */
     private function getBotUserId()
     {
         $message = $this->getMessages()[0];
         $botUserIdRequest = $this->sendRequest('auth.test', [], $message);
-        $botUserIdPayload = new ParameterBag((array)json_decode($botUserIdRequest->getContent(), true));
+        $botUserIdPayload = new ParameterBag((array) json_decode($botUserIdRequest->getContent(), true));
 
         if ($botUserIdPayload->get('user_id')) {
             $this->botUserID = $botUserIdPayload->get('user_id');
@@ -376,13 +376,13 @@ class SlackDriver extends HttpDriver implements VerifiesService
     }
 
     /**
-     * Get bot ID
+     * Get bot ID.
      */
     private function getBotId()
     {
         $message = $this->getMessages()[0];
         $botUserRequest = $this->sendRequest('users.info', ['user' => $this->botUserID], $message);
-        $botUserPayload = (array)json_decode($botUserRequest->getContent(), true);
+        $botUserPayload = (array) json_decode($botUserRequest->getContent(), true);
 
         if ($botUserPayload['user']['name']) {
             $this->botUserName = ucfirst($botUserPayload['user']['name']);
