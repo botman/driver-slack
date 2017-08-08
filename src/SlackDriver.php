@@ -67,7 +67,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
      */
     public function matchesRequest()
     {
-        return ! is_null($this->event->get('user')) || ! is_null($this->event->get('team_domain'));
+        return !is_null($this->event->get('user')) || !is_null($this->event->get('team_domain')) || !is_null($this->event->get('bot_id'));
     }
 
     /**
@@ -131,7 +131,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
      */
     protected function isBot()
     {
-        return $this->event->has('bot_id');
+        return $this->event->has('bot_id') && $this->event->get('bot_id') == $this->botID;
     }
 
     /**
