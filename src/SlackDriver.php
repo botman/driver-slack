@@ -27,6 +27,10 @@ class SlackDriver extends HttpDriver implements VerifiesService
 
     protected $resultType = self::RESULT_JSON;
 
+    protected $botID;
+
+    protected $botUserID;
+
     /**
      * @param Request $request
      */
