@@ -359,9 +359,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
     }
 
     /**
-     *
      * Get bot userID.
-     *
      */
     private function getBotUserId()
     {
