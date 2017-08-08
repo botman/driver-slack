@@ -198,7 +198,7 @@ class SlackRTMDriver implements DriverInterface
      */
     protected function isBot()
     {
-        return $this->event->has('bot_id') && $this->event->get('bot_id') !== $this->bot_id;
+        return $this->event->has('bot_id') && $this->event->get('bot_id') == $this->bot_id;
     }
 
     /**
