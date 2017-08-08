@@ -382,8 +382,8 @@ class SlackDriver extends HttpDriver implements VerifiesService
         $botUserRequest = $this->sendRequest('users.info', ['user' => $this->botUserID], $message);
         $botUserPayload = (array) json_decode($botUserRequest->getContent(), true);
 
-        if ($botUserPayload['user']['name']) {
-            $this->botUserName = ucfirst($botUserPayload['user']['name']);
+        if ($botUserPayload['user']['is_bot']) {
+            $this->botID = $botUserPayload['user']['profile']['bot_id'];
         }
     }
 }
