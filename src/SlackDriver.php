@@ -56,6 +56,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
         } else {
             $this->payload = new ParameterBag((array) json_decode($request->getContent(), true));
             $this->event = Collection::make($this->payload->get('event'));
+            $this->getBotUserId();
         }
     }
 
@@ -354,6 +355,37 @@ class SlackDriver extends HttpDriver implements VerifiesService
         $payload = Collection::make(json_decode($request->getContent(), true));
         if ($payload->get('type') === 'url_verification') {
             return Response::create($payload->get('challenge'))->send();
+        }
+    }
+
+    /**
+     *
+     * Get bot userID
+     *
+     */
+    private function getBotUserId()
+    {
+        $message = $this->getMessages()[0];
+        $botUserIdRequest = $this->sendRequest('auth.test', [], $message);
+        $botUserIdPayload = new ParameterBag((array)json_decode($botUserIdRequest->getContent(), true));
+
+        if ($botUserIdPayload->get('user_id')) {
+            $this->botUserID = $botUserIdPayload->get('user_id');
+            $this->getBotId();
+        }
+    }
+
+    /**
+     * Get bot ID
+     */
+    private function getBotId()
+    {
+        $message = $this->getMessages()[0];
+        $botUserRequest = $this->sendRequest('users.info', ['user' => $this->botUserID], $message);
+        $botUserPayload = (array)json_decode($botUserRequest->getContent(), true);
+
+        if ($botUserPayload['user']['name']) {
+            $this->botUserName = ucfirst($botUserPayload['user']['name']);
         }
     }
 }
