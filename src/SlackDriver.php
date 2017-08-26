@@ -223,7 +223,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
          * the text and append the question.
          */
         if ($message instanceof Question) {
-            $parameters['text'] = $this->format($message->getText());
+            $parameters['text'] = $message->getText();
             $parameters['attachments'] = json_encode([$this->convertQuestion($message)]);
         } elseif ($message instanceof OutgoingMessage) {
             $parameters['text'] = $message->getText();
@@ -239,7 +239,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
                 }
             }
         } else {
-            $parameters['text'] = $this->format($message);
+            $parameters['text'] = $message;
         }
 
         return $parameters;
@@ -274,27 +274,12 @@ class SlackDriver extends HttpDriver implements VerifiesService
                 }
             }
         } else {
-            $parameters['text'] = $this->format($message);
+            $parameters['text'] = $message;
         }
 
         $parameters['token'] = $this->config->get('token');
 
         return $parameters;
-    }
-
-    /**
-     * Formats a string for Slack.
-     *
-     * @param  string $string
-     * @return string
-     */
-    private function format($string)
-    {
-        $string = str_replace('&', '&amp;', $string);
-        $string = str_replace('<', '&lt;', $string);
-        $string = str_replace('>', '&gt;', $string);
-
-        return $string;
     }
 
     /**
