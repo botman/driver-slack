@@ -383,44 +383,6 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function it_can_originate_messages()
-    {
-        $botman = BotManFactory::create([], new ArrayCache());
-
-        $responseData = [
-            'event' => [
-                'user' => 'U0X12345',
-                'channel' => 'general',
-                'text' => 'response',
-            ],
-        ];
-
-        $html = m::mock(Curl::class);
-        $html->shouldReceive('post')
-            ->once()
-            ->with('https://slack.com/api/chat.postMessage', [], [
-                'as_user' => true,
-                'token' => 'Foo',
-                'channel' => 'general',
-                'text' => 'Test',
-            ]);
-
-        $request = m::mock(\Symfony\Component\HttpFoundation\Request::class.'[getContent]');
-        $request->shouldReceive('getContent')->andReturn(json_encode($responseData));
-
-        $driver = new SlackDriver($request, [
-            'slack' => [
-                'token' => 'Foo',
-            ],
-        ], $html);
-
-        $user_id = 'general';
-        $botman->say('Test', $user_id, $driver);
-
-        $this->assertInstanceOf(SlackDriver::class, $botman->getDriver());
-    }
-
-    /** @test */
     public function it_can_reply_string_messages()
     {
         $responseData = [
