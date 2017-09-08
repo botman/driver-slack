@@ -16,14 +16,14 @@
     ],
     "require": {
         "php": ">=7.0",
-        "mpociot/botman": "~2.0"
+        "botman/botman": "~2.0",
+        "mpociot/slack-client": "^0.3.1"
     },
     "require-dev": {
         "phpunit/phpunit": "~5.0",
         "illuminate/console": "~5.0",
         "illuminate/support": "~5.0",
         "mockery/mockery": "dev-master",
-        "mpociot/slack-client": "^0.3.1",
         "ext-curl": "*"
     },
     "suggest": {
@@ -42,7 +42,5 @@
     "scripts": {
         "test": "vendor/bin/phpunit",
         "cs": "php-cs-fixer fix"
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }

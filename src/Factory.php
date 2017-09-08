@@ -68,10 +68,10 @@ class Factory
         });
 
         $client->connect()->then(function () use ($driver) {
-            echo "\033[32mSuccessfully connected".PHP_EOL;
+            echo "\033[32mSuccessfully connected\033[0m".PHP_EOL;
             $driver->connected();
         })->otherwise(function (\Exception $e) {
-            echo "\033[31mError: ".$e->getMessage().PHP_EOL;
+            echo "\033[31mError: ".$e->getMessage()."\033[0m".PHP_EOL;
         });
 
         return $botman;
