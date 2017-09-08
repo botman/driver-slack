@@ -32,12 +32,12 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         }
 
         $slackConfig = ['token' => 'Foo'];
-        $message = new IncomingMessage('', 'U0X12345', 'general');
+        $response = new Response('{"ok": true,"url": "https:\/\/myteam.slack.com\/","team": "My Team","user": "cal","team_id": "T12345","user_id": "U0X12345"}');
 
         $htmlInterface->shouldReceive('post')
             ->once()
             ->with('https://slack.com/api/auth.test', [], $slackConfig)
-            ->andReturn(json_encode($responseData));
+            ->andReturn($response);
 
         return new SlackDriver($request, ['slack' => $slackConfig], $htmlInterface);
     }
