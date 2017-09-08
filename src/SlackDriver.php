@@ -56,7 +56,9 @@ class SlackDriver extends HttpDriver implements VerifiesService
         } else {
             $this->payload = new ParameterBag((array) json_decode($request->getContent(), true));
             $this->event = Collection::make($this->payload->get('event'));
-            $this->getBotUserId();
+            if (!empty($this->config['token']) && empty($this->botID)) {
+                $this->getBotUserId();
+            }
         }
     }
 
@@ -350,7 +352,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
     {
         $message = $this->getMessages()[0];
         $botUserIdRequest = $this->sendRequest('auth.test', [], $message);
-        $botUserIdPayload = new ParameterBag((array) json_decode($botUserIdRequest->getContent(), true));
+        $botUserIdPayload = new ParameterBag((array)json_decode($botUserIdRequest->getContent(), true));
 
         if ($botUserIdPayload->get('user_id')) {
             $this->botUserID = $botUserIdPayload->get('user_id');
