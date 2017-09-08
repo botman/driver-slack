@@ -31,7 +31,15 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
             $htmlInterface = m::mock(Curl::class);
         }
 
-        return new SlackDriver($request, [], $htmlInterface);
+        $slackConfig = ['token' => 'Foo'];
+        $message = new IncomingMessage('', 'U0X12345', 'general');
+
+        $htmlInterface->shouldReceive('post')
+            ->once()
+            ->with('https://slack.com/api/auth.test', [], $slackConfig)
+            ->andReturn(json_encode($responseData));
+
+        return new SlackDriver($request, ['slack' => $slackConfig], $htmlInterface);
     }
 
     /** @test */
