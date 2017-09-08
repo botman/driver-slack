@@ -767,7 +767,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Mocks the auth.test endpoint request
+     * Mocks the auth.test endpoint request.
      *
      * @param $htmlInterface
      */
@@ -778,13 +778,13 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $htmlInterface->shouldReceive('post')
             ->once()
             ->with('https://slack.com/api/auth.test', [], [
-                'token' => "Foo"
+                'token' => 'Foo'
             ])
             ->andReturn($response);
     }
 
     /**
-     * Mocks the users.info endpoint request
+     * Mocks the users.info endpoint request.
      *
      * @param $htmlInterface
      */
