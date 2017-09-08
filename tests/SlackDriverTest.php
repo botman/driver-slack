@@ -199,7 +199,6 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
 
         $response = new Response('{"ok":true,"user":{"id": "U0X12345","name": "botman","deleted": false,"color": "9f69e7","profile": {"bot_id":"foo", "avatar_hash": "ge3b51ca72de","status_emoji": ":mountain_railway:","status_text": "riding a train","first_name": "Bot","last_name": "Man","real_name": "Bot Man","email": "botman@foo.bar","skype": "my-skype-name","phone": "+1 (123) 456 7890","image_24": "http:\/\/via.placeholder.com\/24","image_32": "http:\/\/via.placeholder.com\/32","image_48": "http:\/\/via.placeholder.com\/48","image_72": "http:\/\/via.placeholder.com\/72","image_192": "http:\/\/via.placeholder.com\/192","image_512": "http:\/\/via.placeholder.com\/512"},"is_admin": true, "is_owner": true,"is_primary_owner": true,"is_restricted": false,"is_ultra_restricted": false,"updated": 1490054400,"has_2fa": false,"two_factor_type": "sms","is_bot": true}}');
 
-
         $html->shouldReceive('post')
             ->with('https://slack.com/api/users.info', [], [
                 'token' => 'Foo',
@@ -408,7 +407,6 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
 
         $this->mockAuthTestEndpoint($html);
         $this->mockUserInfoEndpoint($html);
-
 
         $html->shouldReceive('post')
             ->once()
