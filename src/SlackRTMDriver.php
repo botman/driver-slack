@@ -204,7 +204,7 @@ class SlackRTMDriver implements DriverInterface
     public function buildServicePayload($message, $matchingMessage, $additionalParameters = [])
     {
         $parameters = array_merge_recursive([
-            'channel' => $matchingMessage->getRecipient(),
+            'channel' => $matchingMessage->getRecipient() ?: $matchingMessage->getSender(),
             'as_user' => true,
         ], $additionalParameters);
 
