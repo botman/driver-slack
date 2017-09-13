@@ -27,6 +27,10 @@ class SlackDriver extends HttpDriver implements VerifiesService
 
     protected $resultType = self::RESULT_JSON;
 
+    protected $botID;
+
+    protected $botUserID;
+
     /**
      * @param Request $request
      */
@@ -52,6 +56,9 @@ class SlackDriver extends HttpDriver implements VerifiesService
         } else {
             $this->payload = new ParameterBag((array) json_decode($request->getContent(), true));
             $this->event = Collection::make($this->payload->get('event'));
+            if (! empty($this->config['token']) && empty($this->botID)) {
+                $this->getBotUserId();
+            }
         }
     }
 
@@ -62,7 +69,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
      */
     public function matchesRequest()
     {
-        return ! is_null($this->event->get('user')) || ! is_null($this->event->get('team_domain'));
+        return ! is_null($this->event->get('user')) || ! is_null($this->event->get('team_domain')) || ! is_null($this->event->get('bot_id'));
     }
 
     /**
@@ -126,7 +133,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
      */
     protected function isBot()
     {
-        return $this->event->has('bot_id');
+        return $this->event->has('bot_id') && $this->event->get('bot_id') == $this->botID;
     }
 
     /**
@@ -335,6 +342,35 @@ class SlackDriver extends HttpDriver implements VerifiesService
         $payload = Collection::make(json_decode($request->getContent(), true));
         if ($payload->get('type') === 'url_verification') {
             return Response::create($payload->get('challenge'))->send();
+        }
+    }
+
+    /**
+     * Get bot userID.
+     */
+    private function getBotUserId()
+    {
+        $message = $this->getMessages()[0];
+        $botUserIdRequest = $this->sendRequest('auth.test', [], $message);
+        $botUserIdPayload = new ParameterBag((array) json_decode($botUserIdRequest->getContent(), true));
+
+        if ($botUserIdPayload->get('user_id')) {
+            $this->botUserID = $botUserIdPayload->get('user_id');
+            $this->getBotId();
+        }
+    }
+
+    /**
+     * Get bot ID.
+     */
+    private function getBotId()
+    {
+        $message = $this->getMessages()[0];
+        $botUserRequest = $this->sendRequest('users.info', ['user' => $this->botUserID], $message);
+        $botUserPayload = (array) json_decode($botUserRequest->getContent(), true);
+
+        if ($botUserPayload['user']['is_bot']) {
+            $this->botID = $botUserPayload['user']['profile']['bot_id'];
         }
     }
 }

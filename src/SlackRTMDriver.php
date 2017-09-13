@@ -34,6 +34,9 @@ class SlackRTMDriver implements DriverInterface
     /** @var string */
     protected $bot_id;
 
+    /** @var string */
+    protected $botUserID;
+
     const DRIVER_NAME = 'SlackRTM';
 
     protected $file;
@@ -65,7 +68,10 @@ class SlackRTMDriver implements DriverInterface
     public function connected()
     {
         $this->client->getAuthedUser()->then(function ($user) {
-            $this->bot_id = $user->getId();
+            $this->botUserID = $user->getId();
+            if (isset($user->data['is_bot']) && $user->data['is_bot']) {
+                $this->bot_id = $user->data['profile']['bot_id'];
+            }
         });
     }
 
@@ -192,7 +198,7 @@ class SlackRTMDriver implements DriverInterface
      */
     protected function isBot()
     {
-        return $this->event->has('bot_id') && $this->event->get('bot_id') !== $this->bot_id;
+        return $this->event->has('bot_id') && $this->event->get('bot_id') == $this->bot_id;
     }
 
     /**

@@ -76,7 +76,7 @@ class SlackRTMDriverTest extends PHPUnit_Framework_TestCase
 
         $driver = $this->getDriver([
             'user' => 'U0X12345',
-            'bot_id' => 'foo',
+            'bot_id' => null,
             'text' => 'Hi Julia',
         ]);
         $messages = $driver->getMessages();

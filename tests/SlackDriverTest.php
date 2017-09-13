@@ -31,7 +31,17 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
             $htmlInterface = m::mock(Curl::class);
         }
 
-        return new SlackDriver($request, [], $htmlInterface);
+        $slackConfig = ['token' => 'Foo'];
+        $response = new Response('{"ok": true,"url": "https:\/\/myteam.slack.com\/","team": "My Team","user": "cal","team_id": "T12345","user_id": "U0X12345"}');
+
+        $htmlInterface->shouldReceive('post')
+            ->once()
+            ->with('https://slack.com/api/auth.test', [], $slackConfig)
+            ->andReturn($response);
+
+        $this->mockUserInfoEndpoint($htmlInterface);
+
+        return new SlackDriver($request, ['slack' => $slackConfig], $htmlInterface);
     }
 
     /** @test */
@@ -183,11 +193,13 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
             ],
         ];
 
-        $response = new Response('{"ok":true,"user":{"id": "U0X12345","name": "botman","deleted": false,"color": "9f69e7","profile": {"avatar_hash": "ge3b51ca72de","status_emoji": ":mountain_railway:","status_text": "riding a train","first_name": "Bot","last_name": "Man","real_name": "Bot Man","email": "botman@foo.bar","skype": "my-skype-name","phone": "+1 (123) 456 7890","image_24": "http:\/\/via.placeholder.com\/24","image_32": "http:\/\/via.placeholder.com\/32","image_48": "http:\/\/via.placeholder.com\/48","image_72": "http:\/\/via.placeholder.com\/72","image_192": "http:\/\/via.placeholder.com\/192","image_512": "http:\/\/via.placeholder.com\/512"},"is_admin": true, "is_owner": true,"is_primary_owner": true,"is_restricted": false,"is_ultra_restricted": false,"updated": 1490054400,"has_2fa": false,"two_factor_type": "sms"}}');
-
         $html = m::mock(Curl::class);
+
+        $this->mockAuthTestEndpoint($html);
+
+        $response = new Response('{"ok":true,"user":{"id": "U0X12345","name": "botman","deleted": false,"color": "9f69e7","profile": {"bot_id":"foo", "avatar_hash": "ge3b51ca72de","status_emoji": ":mountain_railway:","status_text": "riding a train","first_name": "Bot","last_name": "Man","real_name": "Bot Man","email": "botman@foo.bar","skype": "my-skype-name","phone": "+1 (123) 456 7890","image_24": "http:\/\/via.placeholder.com\/24","image_32": "http:\/\/via.placeholder.com\/32","image_48": "http:\/\/via.placeholder.com\/48","image_72": "http:\/\/via.placeholder.com\/72","image_192": "http:\/\/via.placeholder.com\/192","image_512": "http:\/\/via.placeholder.com\/512"},"is_admin": true, "is_owner": true,"is_primary_owner": true,"is_restricted": false,"is_ultra_restricted": false,"updated": 1490054400,"has_2fa": false,"two_factor_type": "sms","is_bot": true}}');
+
         $html->shouldReceive('post')
-            ->once()
             ->with('https://slack.com/api/users.info', [], [
                 'token' => 'Foo',
                 'user' => 'U0X12345',
@@ -392,6 +404,10 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         ];
 
         $html = m::mock(Curl::class);
+
+        $this->mockAuthTestEndpoint($html);
+        $this->mockUserInfoEndpoint($html);
+
         $html->shouldReceive('post')
             ->once()
             ->with('https://slack.com/api/chat.postMessage', [], [
@@ -426,6 +442,9 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         ];
 
         $html = m::mock(Curl::class);
+        $this->mockAuthTestEndpoint($html);
+        $this->mockUserInfoEndpoint($html);
+
         $html->shouldReceive('post')
             ->once()
             ->with('https://slack.com/api/chat.postMessage', [], [
@@ -460,6 +479,9 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         ];
 
         $html = m::mock(Curl::class);
+        $this->mockAuthTestEndpoint($html);
+        $this->mockUserInfoEndpoint($html);
+
         $html->shouldReceive('post')
             ->once()
             ->with('https://slack.com/api/chat.postMessage', [], [
@@ -538,6 +560,9 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
             ->addButton(Button::create('Good'));
 
         $html = m::mock(Curl::class);
+        $this->mockAuthTestEndpoint($html);
+        $this->mockUserInfoEndpoint($html);
+
         $html->shouldReceive('post')
             ->once()
             ->with('https://slack.com/api/chat.postMessage', [], [
@@ -577,6 +602,9 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
             ->addButton(Button::create('Good'));
 
         $html = m::mock(Curl::class);
+        $this->mockAuthTestEndpoint($html);
+        $this->mockUserInfoEndpoint($html);
+
         $html->shouldReceive('post')
             ->once()
             ->with('https://slack.com/api/chat.postMessage', [], [
@@ -612,6 +640,9 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         ];
 
         $html = m::mock(Curl::class);
+        $this->mockAuthTestEndpoint($html);
+        $this->mockUserInfoEndpoint($html);
+
         $html->shouldReceive('post')
             ->once()
             ->with('https://slack.com/api/chat.postMessage', [], [
@@ -658,6 +689,9 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         ];
 
         $html = m::mock(Curl::class);
+        $this->mockAuthTestEndpoint($html);
+        $this->mockUserInfoEndpoint($html);
+
         $html->shouldReceive('post')
             ->once()
             ->with('https://slack.com/api/chat.postMessage', [], [
@@ -706,6 +740,9 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $request->shouldReceive('getContent')->andReturn('');
         $htmlInterface = m::mock(Curl::class);
 
+        $this->mockAuthTestEndpoint($htmlInterface);
+        $this->mockUserInfoEndpoint($htmlInterface);
+
         $driver = new SlackDriver($request, [
             'slack' => [
                 'token' => 'Foo',
@@ -725,5 +762,40 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $driver = new SlackDriver($request, [], $htmlInterface);
 
         $this->assertFalse($driver->isConfigured());
+    }
+
+    /**
+     * Mocks the auth.test endpoint request.
+     *
+     * @param $htmlInterface
+     */
+    private function mockAuthTestEndpoint($htmlInterface)
+    {
+        $response = new Response('{"ok": true,"url": "https:\/\/myteam.slack.com\/","team": "My Team","user": "cal","team_id": "T12345","user_id": "U0X12345"}');
+
+        $htmlInterface->shouldReceive('post')
+            ->once()
+            ->with('https://slack.com/api/auth.test', [], [
+                'token' => 'Foo',
+            ])
+            ->andReturn($response);
+    }
+
+    /**
+     * Mocks the users.info endpoint request.
+     *
+     * @param $htmlInterface
+     */
+    private function mockUserInfoEndpoint($htmlInterface)
+    {
+        $response = new Response('{"ok":true,"user":{"id": "U0X12345","name": "botman","deleted": false,"color": "9f69e7","profile": {"avatar_hash": "ge3b51ca72de","status_emoji": ":mountain_railway:","status_text": "riding a train","first_name": "Bot","last_name": "Man","real_name": "Bot Man","email": "botman@foo.bar","skype": "my-skype-name","phone": "+1 (123) 456 7890","image_24": "http:\/\/via.placeholder.com\/24","image_32": "http:\/\/via.placeholder.com\/32","image_48": "http:\/\/via.placeholder.com\/48","image_72": "http:\/\/via.placeholder.com\/72","image_192": "http:\/\/via.placeholder.com\/192","image_512": "http:\/\/via.placeholder.com\/512"},"is_admin": true, "is_owner": true,"is_primary_owner": true,"is_restricted": false,"is_ultra_restricted": false,"updated": 1490054400,"has_2fa": false,"two_factor_type": "sms", "is_bot": true, "profile":{"bot_id":"foo"}}}');
+
+        $htmlInterface->shouldReceive('post')
+            ->once()
+            ->with('https://slack.com/api/users.info', [], [
+                'token' => 'Foo',
+                'user' => 'U0X12345',
+            ])
+            ->andReturn($response);
     }
 }
