@@ -31,6 +31,8 @@ class SlackDriver extends HttpDriver implements VerifiesService
 
     protected $botUserID;
 
+    protected $messages = [];
+
     /**
      * @param Request $request
      */
@@ -104,6 +106,18 @@ class SlackDriver extends HttpDriver implements VerifiesService
      */
     public function getMessages()
     {
+        if (empty($this->messages)) {
+            $this->loadMessages();
+        }
+
+        return $this->messages;
+    }
+
+    /**
+     * Load Slack messages.
+     */
+    protected function loadMessages()
+    {
         $messageText = '';
         if (! $this->payload instanceof Collection) {
             $messageText = $this->event->get('text');
@@ -125,7 +139,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
         $message = new IncomingMessage($messageText, $user_id, $channel_id, $this->event);
         $message->setIsFromBot($this->isBot());
 
-        return [$message];
+        $this->messages = [$message];
     }
 
     /**
@@ -350,8 +364,9 @@ class SlackDriver extends HttpDriver implements VerifiesService
      */
     private function getBotUserId()
     {
-        $message = $this->getMessages()[0];
-        $botUserIdRequest = $this->sendRequest('auth.test', [], $message);
+        $botUserIdRequest = $this->http->post('https://slack.com/api/auth.test', [], [
+            'token' => $this->config->get('token'),
+        ]);
         $botUserIdPayload = new ParameterBag((array) json_decode($botUserIdRequest->getContent(), true));
 
         if ($botUserIdPayload->get('user_id')) {
@@ -365,8 +380,10 @@ class SlackDriver extends HttpDriver implements VerifiesService
      */
     private function getBotId()
     {
-        $message = $this->getMessages()[0];
-        $botUserRequest = $this->sendRequest('users.info', ['user' => $this->botUserID], $message);
+        $botUserRequest = $this->http->post('https://slack.com/api/users.info', [], [
+            'user' => $this->botUserID,
+            'token' => $this->config->get('token'),
+        ]);
         $botUserPayload = (array) json_decode($botUserRequest->getContent(), true);
 
         if ($botUserPayload['user']['is_bot']) {

@@ -130,6 +130,20 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function it_returns_the_message_object_by_reference()
+    {
+        $driver = $this->getDriver([
+            'event' => [
+                'user' => 'U0X12345',
+                'text' => 'Hi Julia',
+            ],
+        ]);
+        $messages = $driver->getMessages();
+        $hash = spl_object_hash($messages[0]);
+        $this->assertSame($hash, spl_object_hash($driver->getMessages()[0]));
+    }
+
+    /** @test */
     public function it_returns_the_message_object_for_outgoing_webhooks()
     {
         $request = new Request([], [
