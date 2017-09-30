@@ -660,16 +660,15 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
                     ->name('games_list')
                     ->options([
                         [
-                            [
-                                'text' => 'Hearts',
-                                'value' => 'hearts',
-                            ],
-                            [
-                                'text' => 'Bridge',
-                                'value' => 'bridge',
-                            ],
+                            'text' => 'Hearts',
+                            'value' => 'hearts',
                         ],
-                    ])
+                        [
+                            'text' => 'Bridge',
+                            'value' => 'bridge',
+                        ],
+                    ]
+                    )
             );
 
         $html = m::mock(Curl::class);
@@ -683,7 +682,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
                 'token' => 'Foo',
                 'channel' => 'general',
                 'text' => '',
-                'attachments' => '[{"text":"Choose a game to play","fallback":null,"callback_id":null,"actions":[{"name":"games_list","text":"Pick a game...","type":"select","options":[{"text":"Hearts","value":"hearts"},{"text":"Bridge","value":"bridge"}]}]',
+                'attachments' => '[{"text":"Choose a game to play","fallback":null,"callback_id":null,"actions":[{"name":"games_list","text":"Pick a game...","type":"select","options":[{"text":"Hearts","value":"hearts"},{"text":"Bridge","value":"bridge"}],"selected_options":null}]}]',
             ]);
 
         $request = m::mock(\Symfony\Component\HttpFoundation\Request::class.'[getContent]');
