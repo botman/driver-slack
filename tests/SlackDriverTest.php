@@ -8,13 +8,13 @@ use BotMan\BotMan\Http\Curl;
 use PHPUnit_Framework_TestCase;
 use Illuminate\Support\Collection;
 use BotMan\Drivers\Slack\SlackDriver;
+use BotMan\Drivers\Slack\Extensions\Menu;
 use BotMan\BotMan\Messages\Attachments\Image;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use BotMan\BotMan\Middleware\MiddlewareManager;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
-use BotMan\Drivers\Slack\Extensions\Menu;
 use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 
 class SlackDriverTest extends PHPUnit_Framework_TestCase
