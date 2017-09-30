@@ -6,6 +6,7 @@ use BotMan\BotMan\BotMan;
 use Illuminate\Support\Collection;
 use BotMan\BotMan\Drivers\HttpDriver;
 use BotMan\Drivers\Slack\Extensions\User;
+use BotMan\Drivers\Slack\Extensions\Dialog;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Interfaces\VerifiesService;
 use BotMan\BotMan\Messages\Attachments\Image;
@@ -16,6 +17,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
+use BotMan\BotMan\Messages\Conversations\Conversation;
 
 class SlackDriver extends HttpDriver implements VerifiesService
 {
@@ -24,6 +26,10 @@ class SlackDriver extends HttpDriver implements VerifiesService
     const RESULT_TOKEN = 'token';
 
     const RESULT_JSON = 'json';
+
+    const RESULT_DIALOG = 'dialog';
+
+    const TYPE_DIALOG_SUBMISSION = 'dialog_submission';
 
     protected $resultType = self::RESULT_JSON;
 
@@ -38,6 +44,8 @@ class SlackDriver extends HttpDriver implements VerifiesService
      */
     public function buildPayload(Request $request)
     {
+        $this->extendConversation();
+
         $this->config = Collection::make($this->config->get('slack', []));
 
         /*
@@ -81,19 +89,24 @@ class SlackDriver extends HttpDriver implements VerifiesService
     public function getConversationAnswer(IncomingMessage $message)
     {
         if ($this->payload instanceof Collection) {
-            $action = Collection::make($this->payload['actions'][0]);
-            $name = $action->get('name');
-            if ($action->get('type') === 'select') {
-                $value = $action->get('selected_options');
+            if ($this->payload->get('type') === self::TYPE_DIALOG_SUBMISSION) {
+                $name = self::TYPE_DIALOG_SUBMISSION;
+                $value = $this->payload->get('submission');
             } else {
-                $value = $action->get('value');
+                $action = Collection::make($this->payload['actions'][0]);
+                $name = $action->get('name');
+                if ($action->get('type') === 'select') {
+                    $value = $action->get('selected_options');
+                } else {
+                    $value = $action->get('value');
+                }
             }
 
             return Answer::create($name)
                 ->setInteractiveReply(true)
                 ->setValue($value)
                 ->setMessage($message)
-                ->setCallbackId($this->payload['callback_id']);
+                ->setCallbackId($this->payload->get('callback_id'));
         }
 
         return Answer::create($this->event->get('text'))->setMessage($message);
@@ -209,6 +222,8 @@ class SlackDriver extends HttpDriver implements VerifiesService
     {
         if ($this->resultType == self::RESULT_TOKEN) {
             return $this->http->post('https://slack.com/api/chat.postMessage', [], $payload);
+        } elseif ($this->resultType == self::RESULT_DIALOG) {
+            return $this->http->post('https://slack.com/api/dialog.open', [], $payload);
         }
 
         return JsonResponse::create($payload)->send();
@@ -227,6 +242,25 @@ class SlackDriver extends HttpDriver implements VerifiesService
             : $matchingMessage->getPayload()->get('ts');
 
         $payload = $this->buildServicePayload($message, $matchingMessage, $additionalParameters);
+
+        return $bot->sendPayload($payload);
+    }
+
+    /**
+     * @param $message
+     * @param array $additionalParameters
+     * @param \BotMan\BotMan\Messages\Incoming\IncomingMessage $matchingMessage
+     * @return array
+     */
+    public function replyDialog(Dialog $dialog, $additionalParameters = [], $matchingMessage, BotMan $bot)
+    {
+        $this->resultType = self::RESULT_DIALOG;
+        $payload = [
+            'trigger_id' => $this->payload->get('trigger_id'),
+            'channel' => $matchingMessage->getRecipient() === '' ? $matchingMessage->getSender() : $matchingMessage->getRecipient(),
+            'token' => $this->config->get('token'),
+            'dialog' => json_encode($dialog->toArray())
+        ];
 
         return $bot->sendPayload($payload);
     }
@@ -389,5 +423,30 @@ class SlackDriver extends HttpDriver implements VerifiesService
         if ($botUserPayload['user']['is_bot']) {
             $this->botID = $botUserPayload['user']['profile']['bot_id'];
         }
+    }
+
+    /**
+     * Extend BotMan conversation class.
+     */
+    public function extendConversation()
+    {
+        Conversation::macro('sendDialog', function(Dialog $dialog, $next, $additionalParameters = []) {
+            $response = $this->bot->replyDialog($dialog, $additionalParameters);
+
+            $validation = function($answer) use ($dialog, $next, $additionalParameters) {
+                $errors = $dialog->errors(Collection::make($answer->getValue()));
+                if (count($errors)) {
+                    $this->bot->touchCurrentConversation();
+                    return Response::create(json_encode(['errors' => $errors]), 200, ['ContentType' => 'application/json'])->send();
+                } else {
+                    if ($next instanceof \Closure) {
+                        $next = $next->bindTo($this, $this);
+                    }
+                    $next($answer);
+                }
+            };
+            $this->bot->storeConversation($this, $validation, $dialog, $additionalParameters);
+            return $response;
+        });
     }
 }
