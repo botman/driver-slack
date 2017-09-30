@@ -643,6 +643,63 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function it_can_reply_with_menu()
+    {
+        $responseData = [
+            'event' => [
+                'user' => 'U0X12345',
+                'channel' => 'general',
+                'text' => 'response',
+            ],
+        ];
+
+        $question = Question::create('Choose a game to play')
+            ->addAction(
+                Menu::create('Pick a game...')
+                    ->name('games_list')
+                    ->options([
+                        [
+                            [
+                                'text' => 'Hearts',
+                                'value' => 'hearts'
+                            ],
+                            [
+                                'text' => 'Bridge',
+                                'value' => 'bridge'
+                            ]
+                        ]
+                    ])
+            );
+
+
+        $html = m::mock(Curl::class);
+        $this->mockAuthTestEndpoint($html);
+        $this->mockUserInfoEndpoint($html);
+
+        $html->shouldReceive('post')
+            ->once()
+            ->with('https://slack.com/api/chat.postMessage', [], [
+                'as_user' => true,
+                'token' => 'Foo',
+                'channel' => 'general',
+                'text' => '',
+                'attachments' => '[{"text":"Choose a game to play","fallback":null,"callback_id":null,"actions":[{"name":"games_list","text":"Pick a game...","type":"select","options":[{"text":"Hearts","value":"hearts"},{"text":"Bridge","value":"bridge"}]}]',
+            ]);
+
+        $request = m::mock(\Symfony\Component\HttpFoundation\Request::class.'[getContent]');
+        $request->shouldReceive('getContent')->andReturn(json_encode($responseData));
+
+        $driver = new SlackDriver($request, [
+            'slack' => [
+                'token' => 'Foo',
+            ],
+        ], $html);
+
+        $message = new IncomingMessage('', '', 'general');
+        $driver->sendPayload($driver->buildServicePayload($question, $message));
+    }
+
+    /** @test */
     public function it_can_reply_with_additional_parameters()
     {
         $responseData = [
