@@ -169,7 +169,9 @@ class SlackDriver extends HttpDriver implements VerifiesService
         $questionData = $question->toArray();
 
         $buttons = Collection::make($question->getButtons())->map(function ($button) {
-            if($button['type'] == 'select') return $button;
+            if ($button['type'] == 'select') {
+                return $button;
+            }
             return array_merge([
                 'name' => $button['name'],
                 'text' => $button['text'],
