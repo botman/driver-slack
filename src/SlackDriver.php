@@ -6,8 +6,8 @@ use BotMan\BotMan\BotMan;
 use Illuminate\Support\Collection;
 use BotMan\BotMan\Drivers\HttpDriver;
 use BotMan\Drivers\Slack\Extensions\User;
-use BotMan\Drivers\Slack\Extensions\Dialog;
 use BotMan\BotMan\Messages\Incoming\Answer;
+use BotMan\Drivers\Slack\Extensions\Dialog;
 use BotMan\BotMan\Interfaces\VerifiesService;
 use BotMan\BotMan\Messages\Attachments\Image;
 use BotMan\BotMan\Messages\Outgoing\Question;
@@ -252,14 +252,14 @@ class SlackDriver extends HttpDriver implements VerifiesService
      * @param \BotMan\BotMan\Messages\Incoming\IncomingMessage $matchingMessage
      * @return array
      */
-    public function replyDialog(Dialog $dialog, $additionalParameters = [], $matchingMessage, BotMan $bot)
+    public function replyDialog(Dialog $dialog, $additionalParameters, $matchingMessage, BotMan $bot)
     {
         $this->resultType = self::RESULT_DIALOG;
         $payload = [
             'trigger_id' => $this->payload->get('trigger_id'),
             'channel' => $matchingMessage->getRecipient() === '' ? $matchingMessage->getSender() : $matchingMessage->getRecipient(),
             'token' => $this->config->get('token'),
-            'dialog' => json_encode($dialog->toArray())
+            'dialog' => json_encode($dialog->toArray()),
         ];
 
         return $bot->sendPayload($payload);
@@ -430,13 +430,14 @@ class SlackDriver extends HttpDriver implements VerifiesService
      */
     public function extendConversation()
     {
-        Conversation::macro('sendDialog', function(Dialog $dialog, $next, $additionalParameters = []) {
+        Conversation::macro('sendDialog', function (Dialog $dialog, $next, $additionalParameters = []) {
             $response = $this->bot->replyDialog($dialog, $additionalParameters);
 
-            $validation = function($answer) use ($dialog, $next, $additionalParameters) {
+            $validation = function ($answer) use ($dialog, $next, $additionalParameters) {
                 $errors = $dialog->errors(Collection::make($answer->getValue()));
                 if (count($errors)) {
                     $this->bot->touchCurrentConversation();
+
                     return Response::create(json_encode(['errors' => $errors]), 200, ['ContentType' => 'application/json'])->send();
                 } else {
                     if ($next instanceof \Closure) {
@@ -446,6 +447,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
                 }
             };
             $this->bot->storeConversation($this, $validation, $dialog, $additionalParameters);
+
             return $response;
         });
     }
