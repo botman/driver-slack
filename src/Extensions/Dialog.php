@@ -6,7 +6,6 @@ use Illuminate\Support\Collection;
 
 abstract class Dialog
 {
-
     /** @var string */
     protected $title;
 
@@ -15,7 +14,7 @@ abstract class Dialog
 
     /** @var string */
     protected $callbackId;
-    
+
     /** @var array */
     protected $elements = [];
 
@@ -65,7 +64,7 @@ abstract class Dialog
     public function text(string $label, string $name, $value = null, $additional = [])
     {
         return $this->add($label, $name, 'text', array_merge([
-            'value' => $value
+            'value' => $value,
         ], $additional));
     }
 
@@ -79,7 +78,7 @@ abstract class Dialog
     public function textarea(string $label, string $name, $value = null, $additional = [])
     {
         return $this->add($label, $name, 'textarea', array_merge([
-            'value' => $value
+            'value' => $value,
         ], $additional));
     }
 
@@ -94,7 +93,7 @@ abstract class Dialog
     {
         return $this->add($label, $name, 'text', array_merge([
             'subtype' => 'email',
-            'value' => $value
+            'value' => $value,
         ], $additional));
     }
 
@@ -109,7 +108,7 @@ abstract class Dialog
     {
         return $this->add($label, $name, 'text', array_merge([
             'subtype' => 'number',
-            'value' => $value
+            'value' => $value,
         ], $additional));
     }
 
@@ -124,7 +123,7 @@ abstract class Dialog
     {
         return $this->add($label, $name, 'text', array_merge([
             'subtype' => 'tel',
-            'value' => $value
+            'value' => $value,
         ], $additional));
     }
 
@@ -139,7 +138,7 @@ abstract class Dialog
     {
         return $this->add($label, $name, 'text', array_merge([
             'subtype' => 'url',
-            'value' => $value
+            'value' => $value,
         ], $additional));
     }
 
@@ -151,10 +150,10 @@ abstract class Dialog
         $this->buildForm();
 
         return [
-            "callback_id" => $this->callbackId,
-            "title" => $this->title,
-            "submit_label" => $this->submitLabel,
-            "elements" => $this->elements
+            'callback_id' => $this->callbackId,
+            'title' => $this->title,
+            'submit_label' => $this->submitLabel,
+            'elements' => $this->elements,
         ];
     }
 }
