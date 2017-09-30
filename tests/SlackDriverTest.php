@@ -662,7 +662,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
                         [
                             'text' => 'Bridge',
                             'value' => 'bridge',
-                        ]
+                        ],
                     ])
                     ->options([
                         [
