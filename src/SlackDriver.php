@@ -172,6 +172,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
             if ($button['type'] == 'select') {
                 return $button;
             }
+
             return array_merge([
                 'name' => $button['name'],
                 'text' => $button['text'],
