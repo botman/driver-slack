@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use BotMan\BotMan\Middleware\MiddlewareManager;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
+use BotMan\Drivers\Slack\Extensions\Menu;
 use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 
 class SlackDriverTest extends PHPUnit_Framework_TestCase
