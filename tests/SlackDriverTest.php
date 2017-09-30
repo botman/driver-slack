@@ -661,16 +661,15 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
                         [
                             [
                                 'text' => 'Hearts',
-                                'value' => 'hearts'
+                                'value' => 'hearts',
                             ],
                             [
                                 'text' => 'Bridge',
-                                'value' => 'bridge'
+                                'value' => 'bridge',
                             ]
                         ]
                     ])
             );
-
 
         $html = m::mock(Curl::class);
         $this->mockAuthTestEndpoint($html);
