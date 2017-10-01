@@ -69,8 +69,9 @@ class SlackRTMDriver implements DriverInterface
     {
         $this->client->getAuthedUser()->then(function ($user) {
             $this->botUserID = $user->getId();
-            if (isset($user->data['is_bot']) && $user->data['is_bot']) {
-                $this->bot_id = $user->data['profile']['bot_id'];
+            $data = $user->getRawUser();
+            if (isset($data['is_bot']) && $data['is_bot']) {
+                $this->bot_id = $data['profile']['bot_id'];
             }
         });
     }
