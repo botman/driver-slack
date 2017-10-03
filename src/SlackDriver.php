@@ -185,6 +185,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
             if ($button['type'] === 'select') {
                 return $button;
             }
+
             return array_merge([
                 'name' => $button['name'],
                 'text' => $button['text'],
@@ -322,10 +323,10 @@ class SlackDriver extends HttpDriver implements VerifiesService
          * the text and append the question.
          */
         if ($message instanceof Question) {
-            if (!isset($parameters['text'])) {
+            if (! isset($parameters['text'])) {
                 $parameters['text'] = '';
             }
-            if (!isset($parameters['attachments'])) {
+            if (! isset($parameters['attachments'])) {
                 $parameters['attachments'] = json_encode([$this->convertQuestion($message)]);
             }
         } elseif ($message instanceof OutgoingMessage) {
