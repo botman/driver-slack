@@ -4,6 +4,7 @@ namespace BotMan\Drivers\Slack;
 
 use Slack\File;
 use Slack\RealTimeClient;
+use Slack\User as SlackUser;
 use BotMan\BotMan\BotManFactory;
 use Illuminate\Support\Collection;
 use React\Promise\PromiseInterface;
@@ -310,7 +311,7 @@ class SlackRTMDriver implements DriverInterface
         $this->client->getUserById($matchingMessage->getSender())->then(function ($_user) use (&$user) {
             $user = $_user;
         });
-        if (! is_null($user) && $user instanceof User) {
+        if (! is_null($user) && $user instanceof SlackUser) {
             return new User($this->client, $user->getRawUser());
         }
 
