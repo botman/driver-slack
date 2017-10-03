@@ -182,6 +182,9 @@ class SlackDriver extends HttpDriver implements VerifiesService
         $questionData = $question->toArray();
 
         $buttons = Collection::make($question->getButtons())->map(function ($button) {
+            if ($button['type'] === 'select') {
+                return $button;
+            }
             return array_merge([
                 'name' => $button['name'],
                 'text' => $button['text'],
@@ -313,13 +316,18 @@ class SlackDriver extends HttpDriver implements VerifiesService
             'token' => $this->payload->get('token'),
             'channel' => $matchingMessage->getRecipient() === '' ? $matchingMessage->getSender() : $matchingMessage->getRecipient(),
         ], $additionalParameters);
+
         /*
          * If we send a Question with buttons, ignore
          * the text and append the question.
          */
         if ($message instanceof Question) {
-            $parameters['text'] = '';
-            $parameters['attachments'] = json_encode([$this->convertQuestion($message)]);
+            if (!isset($parameters['text'])) {
+                $parameters['text'] = '';
+            }
+            if (!isset($parameters['attachments'])) {
+                $parameters['attachments'] = json_encode([$this->convertQuestion($message)]);
+            }
         } elseif ($message instanceof OutgoingMessage) {
             $parameters['text'] = $message->getText();
             $attachment = $message->getAttachment();

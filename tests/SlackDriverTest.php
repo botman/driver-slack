@@ -8,6 +8,7 @@ use BotMan\BotMan\Http\Curl;
 use PHPUnit_Framework_TestCase;
 use Illuminate\Support\Collection;
 use BotMan\Drivers\Slack\SlackDriver;
+use BotMan\Drivers\Slack\Extensions\Menu;
 use BotMan\BotMan\Messages\Attachments\Image;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use Symfony\Component\HttpFoundation\Request;
@@ -627,6 +628,48 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
                 'channel' => 'general',
                 'text' => '',
                 'attachments' => '[{"text":"How are you doing?","fallback":null,"callback_id":null,"actions":[{"name":"Great","text":"Great","image_url":null,"type":"button","value":null},{"name":"Good","text":"Good","image_url":null,"type":"button","value":null}]}]',
+            ]);
+
+        $request = m::mock(\Symfony\Component\HttpFoundation\Request::class.'[getContent]');
+        $request->shouldReceive('getContent')->andReturn(json_encode($responseData));
+
+        $driver = new SlackDriver($request, [
+            'slack' => [
+                'token' => 'Foo',
+            ],
+        ], $html);
+
+        $message = new IncomingMessage('', '', 'general');
+        $driver->sendPayload($driver->buildServicePayload($question, $message));
+    }
+
+    /** @test */
+    public function it_can_reply_questions_with_menus()
+    {
+        $responseData = [
+            'event' => [
+                'user' => 'U0X12345',
+                'channel' => 'general',
+                'text' => 'response',
+            ],
+        ];
+
+        $menu = Menu::create('Select your channel')->chooseFromChannels();
+        $question = Question::create('How are you doing?')
+            ->addAction($menu);
+
+        $html = m::mock(Curl::class);
+        $this->mockAuthTestEndpoint($html);
+        $this->mockUserInfoEndpoint($html);
+
+        $html->shouldReceive('post')
+            ->once()
+            ->with('https://slack.com/api/chat.postMessage', [], [
+                'as_user' => true,
+                'token' => 'Foo',
+                'channel' => 'general',
+                'text' => '',
+                'attachments' => '[{"text":"How are you doing?","fallback":null,"callback_id":null,"actions":[{"name":"Select your channel","text":"Select your channel","type":"select","data_source":"channels"}]}]',
             ]);
 
         $request = m::mock(\Symfony\Component\HttpFoundation\Request::class.'[getContent]');
