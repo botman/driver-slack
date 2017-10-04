@@ -4,6 +4,7 @@ namespace BotMan\Drivers\Slack;
 
 use Slack\File;
 use Slack\RealTimeClient;
+use Slack\User as SlackUser;
 use BotMan\BotMan\BotManFactory;
 use Illuminate\Support\Collection;
 use React\Promise\PromiseInterface;
@@ -69,8 +70,9 @@ class SlackRTMDriver implements DriverInterface
     {
         $this->client->getAuthedUser()->then(function ($user) {
             $this->botUserID = $user->getId();
-            if (isset($user->data['is_bot']) && $user->data['is_bot']) {
-                $this->bot_id = $user->data['profile']['bot_id'];
+            $data = $user->getRawUser();
+            if (isset($data['is_bot']) && $data['is_bot']) {
+                $this->bot_id = $data['profile']['bot_id'];
             }
         });
     }
@@ -131,6 +133,10 @@ class SlackRTMDriver implements DriverInterface
         $questionData = $question->toArray();
 
         $buttons = Collection::make($question->getButtons())->map(function ($button) {
+            if ($button['type'] === 'select') {
+                return $button;
+            }
+
             return array_merge([
                 'name' => $button['name'],
                 'text' => $button['text'],
@@ -162,26 +168,25 @@ class SlackRTMDriver implements DriverInterface
         if (is_array($channel_id)) {
             $channel_id = $channel_id['id'];
         }
-
         if ($this->event->get('subtype') === 'file_share') {
             $file = Collection::make($this->event->get('file'));
 
             if (strstr($file->get('mimetype'), 'image')) {
                 $message = new IncomingMessage(Image::PATTERN, $user_id, $channel_id, $this->event);
                 $message->setIsFromBot($this->isBot());
-                $message->setImages([$file->get('permalink')]);
+                $message->setImages([new Image($file->get('permalink'), $file)]);
             } elseif (strstr($file->get('mimetype'), 'audio')) {
                 $message = new IncomingMessage(Audio::PATTERN, $user_id, $channel_id, $this->event);
                 $message->setIsFromBot($this->isBot());
-                $message->setAudio([$file->get('permalink')]);
+                $message->setAudio([new Audio($file->get('permalink'), $file)]);
             } elseif (strstr($file->get('mimetype'), 'video')) {
                 $message = new IncomingMessage(Video::PATTERN, $user_id, $channel_id, $this->event);
                 $message->setIsFromBot($this->isBot());
-                $message->setVideos([$file->get('permalink')]);
+                $message->setVideos([new Video($file->get('permalink'), $file)]);
             } else {
                 $message = new IncomingMessage(\BotMan\BotMan\Messages\Attachments\File::PATTERN, $user_id, $channel_id, $this->event);
                 $message->setIsFromBot($this->isBot());
-                $message->setFiles([$file->get('permalink')]);
+                $message->setFiles([new \BotMan\BotMan\Messages\Attachments\File($file->get('permalink'), $file)]);
             }
 
             return [$message];
@@ -310,7 +315,7 @@ class SlackRTMDriver implements DriverInterface
         $this->client->getUserById($matchingMessage->getSender())->then(function ($_user) use (&$user) {
             $user = $_user;
         });
-        if (! is_null($user) && $user instanceof User) {
+        if (! is_null($user) && $user instanceof SlackUser) {
             return new User($this->client, $user->getRawUser());
         }
 

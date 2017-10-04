@@ -644,7 +644,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function it_can_reply_with_menu()
+    public function it_can_reply_questions_with_menus()
     {
         $responseData = [
             'event' => [
@@ -654,27 +654,9 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
             ],
         ];
 
-        $question = Question::create('Choose a game to play')
-            ->addAction(
-                Menu::create('Pick a game...')
-                    ->name('games_list')
-                    ->selectedOptions([
-                        [
-                            'text' => 'Bridge',
-                            'value' => 'bridge',
-                        ],
-                    ])
-                    ->options([
-                        [
-                            'text' => 'Hearts',
-                            'value' => 'hearts',
-                        ],
-                        [
-                            'text' => 'Bridge',
-                            'value' => 'bridge',
-                        ],
-                    ])
-            );
+        $menu = Menu::create('Select your channel')->chooseFromChannels();
+        $question = Question::create('How are you doing?')
+            ->addAction($menu);
 
         $html = m::mock(Curl::class);
         $this->mockAuthTestEndpoint($html);
@@ -687,7 +669,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
                 'token' => 'Foo',
                 'channel' => 'general',
                 'text' => '',
-                'attachments' => '[{"text":"Choose a game to play","fallback":null,"callback_id":null,"actions":[{"name":"games_list","text":"Pick a game...","type":"select","options":[{"text":"Hearts","value":"hearts"},{"text":"Bridge","value":"bridge"}],"selected_options":[{"text":"Bridge","value":"bridge"}]}]}]',
+                'attachments' => '[{"text":"How are you doing?","fallback":null,"callback_id":null,"actions":[{"name":"Select your channel","text":"Select your channel","type":"select","data_source":"channels"}]}]',
             ]);
 
         $request = m::mock(\Symfony\Component\HttpFoundation\Request::class.'[getContent]');
