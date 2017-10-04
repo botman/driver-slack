@@ -180,7 +180,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
     private function convertQuestion(Question $question)
     {
         $questionData = $question->toArray();
-
+	    
         $buttons = Collection::make($question->getButtons())->map(function ($button) {
             if ($button['type'] === 'select') {
                 return $button;
@@ -195,7 +195,13 @@ class SlackDriver extends HttpDriver implements VerifiesService
             ], $button['additional']);
         })->toArray();
         $questionData['actions'] = $buttons;
-
+        
+	    //Check if Question is an Slack Interactive Menu
+	    $slackmenuMessage = $question->toArray();
+	    if($slackmenuMessage['actions'][0]['type'] == 'select'){
+			$questionData['actions'] = $slackmenuMessage['actions'];
+	    }
+        
         return $questionData;
     }
 
