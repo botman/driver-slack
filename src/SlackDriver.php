@@ -312,7 +312,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
      */
     protected function replyWithToken($message, $matchingMessage, $additionalParameters = [])
     {
-        $parameters = array_merge_recursive([
+        $parameters = array_replace_recursive([
             'as_user' => true,
             'token' => $this->payload->get('token'),
             'channel' => $matchingMessage->getRecipient() === '' ? $matchingMessage->getSender() : $matchingMessage->getRecipient(),
