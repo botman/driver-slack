@@ -19,13 +19,13 @@ class Menu implements QuestionActionInterface
     protected $text;
 
     /** @var array */
-    protected $options = array();
+    protected $options = [];
 
     /** @var array */
-    protected $optionGroups = array();
+    protected $optionGroups = [];
 
     /** @var array */
-    protected $selectedOptions = array();
+    protected $selectedOptions = [];
 
     /** @var string */
     protected $dataSource;
