@@ -27,7 +27,7 @@ class SlackServiceProvider extends ServiceProvider
             $this->mergeConfigFrom(__DIR__.'/../../stubs/slack.php', 'botman.slack');
 
             $this->commands([
-                SlackRTMListenCommand::class
+                SlackRTMListenCommand::class,
             ]);
         }
     }
