@@ -20,6 +20,7 @@
         "mpociot/slack-client": "~1.0"
     },
     "require-dev": {
+        "botman/studio-addons": "~1.0",
         "phpunit/phpunit": "~5.0",
         "illuminate/console": "~5.0",
         "illuminate/support": "~5.0",
@@ -42,5 +43,12 @@
     "scripts": {
         "test": "vendor/bin/phpunit",
         "cs": "php-cs-fixer fix"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "BotMan\\Drivers\\Slack\\Providers\\SlackServiceProvider"
+            ]
+        }
     }
 }
