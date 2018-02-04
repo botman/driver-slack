@@ -78,6 +78,24 @@ class SlackRTMDriver implements DriverInterface
     }
 
     /**
+     * Returns the authenticated bot user ID
+     * @return string
+     */
+    public function getBotUserId()
+    {
+        return $this->botUserID;
+    }
+
+    /**
+     * Returns the authenticated bot  ID
+     * @return string
+     */
+    public function getBotId()
+    {
+        return $this->bot_id;
+    }
+
+    /**
      * Return the driver name.
      *
      * @return string
