@@ -251,7 +251,7 @@ class SlackRTMDriver implements DriverInterface
                         ],
                     ]);
 
-                    // else check if is a path
+                // else check if is a path
                 } elseif ($attachment instanceof BotManFile && file_exists($attachment->getUrl())) {
                     $this->file = (new File())
                         ->setTitle(basename($attachment->getUrl()))
