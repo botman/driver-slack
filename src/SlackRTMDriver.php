@@ -78,7 +78,7 @@ class SlackRTMDriver implements DriverInterface
     }
 
     /**
-     * Returns the authenticated bot user ID
+     * Returns the authenticated bot user ID.
      * @return string
      */
     public function getBotUserId()
@@ -87,7 +87,7 @@ class SlackRTMDriver implements DriverInterface
     }
 
     /**
-     * Returns the authenticated bot  ID
+     * Returns the authenticated bot  ID.
      * @return string
      */
     public function getBotId()
