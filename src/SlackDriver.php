@@ -100,6 +100,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
         if (isset($eventData['type']) && $eventData['type'] !== 'message') {
             $event = new GenericEvent(json_encode($eventData));
             $event->setName($eventData['type']);
+
             return $event;
         }
 
