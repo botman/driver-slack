@@ -97,7 +97,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
 
         // If the event type isn't 'message' (which should go through BotMan::hears),
         // build a GenericEvent and return it
-        if (isset($eventData['type']) && $eventData['type'] != 'message')
+        if (isset($eventData['type']) && $eventData['type'] !== 'message')
         {
             $event = new GenericEvent(json_encode($eventData));
             $event->setName($eventData['type']);
