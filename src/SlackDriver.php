@@ -3,7 +3,6 @@
 namespace BotMan\Drivers\Slack;
 
 use BotMan\BotMan\BotMan;
-use BotMan\BotMan\Drivers\Events\GenericEvent;
 use Illuminate\Support\Collection;
 use BotMan\BotMan\Drivers\HttpDriver;
 use BotMan\Drivers\Slack\Extensions\User;
@@ -13,6 +12,7 @@ use BotMan\BotMan\Interfaces\VerifiesService;
 use BotMan\BotMan\Messages\Attachments\Image;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use Symfony\Component\HttpFoundation\Request;
+use BotMan\BotMan\Drivers\Events\GenericEvent;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -97,8 +97,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
 
         // If the event type isn't 'message' (which should go through BotMan::hears),
         // build a GenericEvent and return it
-        if (isset($eventData['type']) && $eventData['type'] !== 'message')
-        {
+        if (isset($eventData['type']) && $eventData['type'] !== 'message') {
             $event = new GenericEvent(json_encode($eventData));
             $event->setName($eventData['type']);
             return $event;
