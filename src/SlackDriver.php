@@ -405,7 +405,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
     /**
      * Get bot userID.
      */
-    private function getBotUserId()
+    public function getBotUserId()
     {
         $botUserIdRequest = $this->http->post('https://slack.com/api/auth.test', [], [
             'token' => $this->config->get('token'),
