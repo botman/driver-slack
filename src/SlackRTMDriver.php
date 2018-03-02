@@ -42,6 +42,8 @@ class SlackRTMDriver implements DriverInterface
 
     protected $file;
 
+    protected $messages = [];
+
     /**
      * Driver constructor.
      * @param array $config
@@ -54,6 +56,7 @@ class SlackRTMDriver implements DriverInterface
         $this->client = $client;
 
         $this->client->on('_internal_message', function ($type, $data) {
+            $this->messages = [];
             $this->event = Collection::make($data);
             if ($type !== 'message') {
                 $this->slackEventData = [$type, $data];
@@ -175,6 +178,18 @@ class SlackRTMDriver implements DriverInterface
      */
     public function getMessages()
     {
+        if (empty($this->messages)) {
+            $this->loadMessages();
+        }
+
+        return $this->messages;
+    }
+
+    /**
+     * Load Slack messages.
+     */
+    protected function loadMessages()
+    {
         $messageText = $this->event->get('text');
 
         $user_id = $this->event->get('user');
@@ -213,7 +228,7 @@ class SlackRTMDriver implements DriverInterface
         $message = new IncomingMessage($messageText, $user_id, $channel_id, $this->event);
         $message->setIsFromBot($this->isBot());
 
-        return [$message];
+        $this->messages = [$message];
     }
 
     /**
