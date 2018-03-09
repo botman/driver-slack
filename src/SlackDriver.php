@@ -195,7 +195,12 @@ class SlackDriver extends HttpDriver implements VerifiesService
             ], $button['additional']);
         })->toArray();
         $questionData['actions'] = $buttons;
-
+                $slackmenuMessage = $question->toArray();
+	    	    if($slackmenuMessage['actions'][0]['type'] == 'select'){
+	    			$questionData['actions'] = $slackmenuMessage['actions'];
+	    	    }
+        
+        
         return $questionData;
     }
 
