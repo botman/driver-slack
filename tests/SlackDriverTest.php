@@ -32,7 +32,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
             $htmlInterface = m::mock(Curl::class);
         }
 
-        $slackConfig = ['token' => 'Foo'];
+        $slackConfig = ['token' => 'Foo', 'base_url' => 'https://slack.com/api/'];
         $response = new Response('{"ok": true,"url": "https:\/\/myteam.slack.com\/","team": "My Team","user": "cal","team_id": "T12345","user_id": "U0X12345"}');
 
         $htmlInterface->shouldReceive('post')
@@ -227,6 +227,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $driver = new SlackDriver($request, [
             'slack' => [
                 'token' => 'Foo',
+                'base_url' => 'https://slack.com/api/'
             ],
         ], $html);
 
@@ -438,6 +439,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $driver = new SlackDriver($request, [
             'slack' => [
                 'token' => 'Foo',
+                'base_url' => 'https://slack.com/api/'
             ],
         ], $html);
 
@@ -475,6 +477,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $driver = new SlackDriver($request, [
             'slack' => [
                 'token' => 'Foo',
+                'base_url' => 'https://slack.com/api/'
             ],
         ], $html);
 
@@ -513,6 +516,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $driver = new SlackDriver($request, [
             'slack' => [
                 'token' => 'Foo',
+                'base_url' => 'https://slack.com/api/'
             ],
         ], $html);
 
@@ -594,6 +598,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $driver = new SlackDriver($request, [
             'slack' => [
                 'token' => 'Foo',
+                'base_url' => 'https://slack.com/api/'
             ],
         ], $html);
 
@@ -636,6 +641,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $driver = new SlackDriver($request, [
             'slack' => [
                 'token' => 'Foo',
+                'base_url' => 'https://slack.com/api/'
             ],
         ], $html);
 
@@ -678,6 +684,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $driver = new SlackDriver($request, [
             'slack' => [
                 'token' => 'Foo',
+                'base_url' => 'https://slack.com/api/'
             ],
         ], $html);
 
@@ -720,6 +727,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $driver = new SlackDriver($request, [
             'slack' => [
                 'token' => 'Foo',
+                'base_url' => 'https://slack.com/api/'
             ],
         ], $html);
 
@@ -770,6 +778,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $driver = new SlackDriver($request, [
             'slack' => [
                 'token' => 'Foo',
+                'base_url' => 'https://slack.com/api/'
             ],
         ], $html);
 
@@ -803,6 +812,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
         $driver = new SlackDriver($request, [
             'slack' => [
                 'token' => 'Foo',
+                'base_url' => 'https://slack.com/api/'
             ],
         ], $htmlInterface);
 
