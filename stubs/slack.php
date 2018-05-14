@@ -14,12 +14,12 @@ return [
     
     /*
     |--------------------------------------------------------------------------
-    | Slack API endpoint
+    | Slack API base url
     |--------------------------------------------------------------------------
     |
-    | Your Slack API endpoint. Useful if you're using Mattermost,
+    | Your Slack API base url. Useful if you're using Mattermost,
     |
     */
-    'endpoint' => env('SLACK_ENDPOINT'),
+    'base_url' => env('SLACK_BASE_URL', 'https://slack.com/api/'),
 
 ];

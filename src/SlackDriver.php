@@ -225,9 +225,9 @@ class SlackDriver extends HttpDriver implements VerifiesService
     public function sendPayload($payload)
     {
         if ($this->resultType == self::RESULT_TOKEN) {
-            return $this->http->post('https://slack.com/api/chat.postMessage', [], $payload);
+            return $this->http->post($this->config['base_url'] . 'chat.postMessage', [], $payload);
         } elseif ($this->resultType == self::RESULT_DIALOG) {
-            return $this->http->post('https://slack.com/api/dialog.open', [], $payload);
+            return $this->http->post($this->config['base_url'] . 'dialog.open', [], $payload);
         }
 
         return JsonResponse::create($payload)->send();
@@ -387,7 +387,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
             'token' => $this->config->get('token'),
         ], $parameters);
 
-        return $this->http->post('https://slack.com/api/'.$endpoint, [], $parameters);
+        return $this->http->post($this->config['base_url'] . $endpoint, [], $parameters);
     }
 
     /**
@@ -407,7 +407,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
      */
     public function getBotUserId()
     {
-        $botUserIdRequest = $this->http->post('https://slack.com/api/auth.test', [], [
+        $botUserIdRequest = $this->http->post($this->config['base_url'] . 'auth.test', [], [
             'token' => $this->config->get('token'),
         ]);
         $botUserIdPayload = new ParameterBag((array) json_decode($botUserIdRequest->getContent(), true));
@@ -423,7 +423,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
      */
     private function getBotId()
     {
-        $botUserRequest = $this->http->post('https://slack.com/api/users.info', [], [
+        $botUserRequest = $this->http->post($this->config['base_url'] . 'users.info', [], [
             'user' => $this->botUserID,
             'token' => $this->config->get('token'),
         ]);
