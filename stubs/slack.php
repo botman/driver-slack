@@ -11,5 +11,15 @@ return [
     |
     */
     'token' => env('SLACK_TOKEN'),
+    
+    /*
+    |--------------------------------------------------------------------------
+    | Slack API endpoint
+    |--------------------------------------------------------------------------
+    |
+    | Your Slack API endpoint. Useful if you're using Mattermost,
+    |
+    */
+    'endpoint' => env('SLACK_ENDPOINT'),
 
 ];
