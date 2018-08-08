@@ -12,6 +12,7 @@ use BotMan\BotMan\Interfaces\VerifiesService;
 use BotMan\BotMan\Messages\Attachments\Image;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use Symfony\Component\HttpFoundation\Request;
+use BotMan\BotMan\Drivers\Events\GenericEvent;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -80,6 +81,34 @@ class SlackDriver extends HttpDriver implements VerifiesService
     public function matchesRequest()
     {
         return ! is_null($this->event->get('user')) || ! is_null($this->event->get('team_domain')) || ! is_null($this->event->get('bot_id'));
+    }
+
+    /**
+     * Determine whether a non-message event is matching the current request, and if so,
+     * build and return a GenericEvent instance from it.
+     *
+     * @return GenericEvent|bool|mixed A GenericEvent instance, or the result from
+     *                                 the parent class' method (likely false).
+     */
+    public function hasMatchingEvent()
+    {
+        // Retrieve the 'event' part of the payload
+        $eventData = $this->payload->get('event');
+
+        // If the event type isn't 'message' (which should go through BotMan::hears),
+        // build a GenericEvent and return it
+        if (isset($eventData['type']) && $eventData['type'] !== 'message') {
+            $eventPayload = json_encode($eventData);
+            if ($eventPayload !== false) {
+                $event = new GenericEvent($eventPayload);
+                $event->setName($eventData['type']);
+
+                return $event;
+            }
+        }
+
+        // Otherwise, fall back to the parent implementation
+        return parent::hasMatchingEvent();
     }
 
     /**
