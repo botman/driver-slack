@@ -16,7 +16,8 @@ class SlackRTMListenCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'botman:listen-on-slack';
+    protected $signature = 'botman:listen-on-slack
+                    {--heartbeat-interval=120 : Seconds to wait before checking the connection. Set to 0 to disable}';
 
     /**
      * The console command description.
@@ -27,8 +28,6 @@ class SlackRTMListenCommand extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
     public function handle()
     {
@@ -44,6 +43,18 @@ class SlackRTMListenCommand extends Command
 
         if (file_exists(base_path('routes/botman.php'))) {
             require base_path('routes/botman.php');
+        }
+
+        //If a heartbeat is set, add a periodic timer to check the connection to the server
+        if ($this->option('heartbeat-interval') > 0) {
+            $checkConnection = function () {
+                $botman = resolve('botman');
+                $botman->getDriver()->getClient()->checkConnection();
+            };
+            $loop->addPeriodicTimer(
+                $this->option('heartbeat-interval'),
+                $checkConnection
+            );
         }
 
         $loop->run();
