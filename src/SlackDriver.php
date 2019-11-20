@@ -343,7 +343,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
     {
         $parameters = array_replace_recursive([
             'as_user' => true,
-            'token' => $this->payload->get('token'),
+            'token' => $this->payload->get('token', $this->config->get('token')),
             'channel' => $matchingMessage->getRecipient() === '' ? $matchingMessage->getSender() : $matchingMessage->getRecipient(),
         ], $additionalParameters);
 
@@ -369,8 +369,6 @@ class SlackDriver extends HttpDriver implements VerifiesService
         } else {
             $parameters['text'] = $message;
         }
-
-        $parameters['token'] = $this->config->get('token');
 
         return $parameters;
     }
