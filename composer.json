@@ -27,9 +27,6 @@
         "mockery/mockery": "dev-master",
         "ext-curl": "*"
     },
-    "suggest": {
-        "mpociot/slack-client": "Use the Slack RTM API with BotMan"
-    },
     "autoload": {
         "psr-4": {
             "BotMan\\Drivers\\Slack\\": "src/"
