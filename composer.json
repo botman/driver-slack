@@ -17,7 +17,7 @@
     "require": {
         "php": ">=7.0",
         "botman/botman": "~2.1",
-        "mpociot/slack-client": "~1.0"
+        "mpociot/slack-client": "dev-laravel-8-compatable"
     },
     "require-dev": {
         "botman/studio-addons": "~1.0",
@@ -27,6 +27,12 @@
         "mockery/mockery": "dev-master",
         "ext-curl": "*"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/elephantux/slack-client"
+        }
+    ],
     "suggest": {
         "mpociot/slack-client": "Use the Slack RTM API with BotMan"
     },
