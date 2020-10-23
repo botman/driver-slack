@@ -363,7 +363,12 @@ class SlackDriver extends HttpDriver implements VerifiesService
             $attachment = $message->getAttachment();
             if (! is_null($attachment)) {
                 if ($attachment instanceof Image) {
-                    $parameters['attachments'] = json_encode(['image_url' => $attachment->getUrl()]);
+                    $parameters['attachments'] = json_encode([
+                        [
+                            'title' => $attachment->getTitle() ? $attachment->getTitle() : $attachment->getUrl(),
+                            'image_url' => $attachment->getUrl(),
+                        ],
+                    ]);
                 }
             }
         } else {

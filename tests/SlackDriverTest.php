@@ -483,7 +483,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function it_can_reply_message_objects_with_image()
+    public function it_can_reply_message_objects_with_image_without_title()
     {
         $responseData = [
             'event' => [
@@ -504,7 +504,7 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
                 'token' => 'Foo',
                 'channel' => 'general',
                 'text' => 'Test',
-                'attachments' => json_encode(['image_url' => 'http://image.url/foo.png']),
+                'attachments' => json_encode([['title' => 'http://image.url/foo.png', 'image_url' => 'http://image.url/foo.png']]),
             ]);
 
         $request = m::mock(\Symfony\Component\HttpFoundation\Request::class.'[getContent]');
@@ -518,6 +518,44 @@ class SlackDriverTest extends PHPUnit_Framework_TestCase
 
         $message = new IncomingMessage('', 'U0X12345', 'general');
         $driver->sendPayload($driver->buildServicePayload(\BotMan\BotMan\Messages\Outgoing\OutgoingMessage::create('Test', Image::url('http://image.url/foo.png')), $message));
+    }
+
+    /** @test */
+    public function it_can_reply_message_objects_with_image_with_title()
+    {
+        $responseData = [
+            'event' => [
+                'user' => 'U0X12345',
+                'channel' => 'general',
+                'text' => 'response',
+            ],
+        ];
+
+        $html = m::mock(Curl::class);
+        $this->mockAuthTestEndpoint($html);
+        $this->mockUserInfoEndpoint($html);
+
+        $html->shouldReceive('post')
+            ->once()
+            ->with('https://slack.com/api/chat.postMessage', [], [
+                'as_user' => true,
+                'token' => 'Foo',
+                'channel' => 'general',
+                'text' => 'Test',
+                'attachments' => json_encode([['title' => 'title', 'image_url' => 'http://image.url/foo.png']]),
+            ]);
+
+        $request = m::mock(\Symfony\Component\HttpFoundation\Request::class.'[getContent]');
+        $request->shouldReceive('getContent')->andReturn(json_encode($responseData));
+
+        $driver = new SlackDriver($request, [
+            'slack' => [
+                'token' => 'Foo',
+            ],
+        ], $html);
+
+        $message = new IncomingMessage('', 'U0X12345', 'general');
+        $driver->sendPayload($driver->buildServicePayload(\BotMan\BotMan\Messages\Outgoing\OutgoingMessage::create('Test', (Image::url('http://image.url/foo.png'))->title('title')), $message));
     }
 
     /** @test */
