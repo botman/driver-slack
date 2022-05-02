@@ -3,23 +3,23 @@
 namespace BotMan\Drivers\Slack;
 
 use BotMan\BotMan\BotMan;
-use Slack\RealTimeClient;
-use Illuminate\Support\Collection;
-use React\EventLoop\LoopInterface;
 use BotMan\BotMan\Cache\ArrayCache;
 use BotMan\BotMan\Interfaces\CacheInterface;
 use BotMan\BotMan\Interfaces\StorageInterface;
 use BotMan\BotMan\Storages\Drivers\FileStorage;
+use Illuminate\Support\Collection;
+use React\EventLoop\LoopInterface;
+use Slack\RealTimeClient;
 
 class Factory
 {
     /**
      * Create a new BotMan instance.
      *
-     * @param array $config
-     * @param LoopInterface $loop
-     * @param CacheInterface $cache
-     * @param StorageInterface $storageDriver
+     * @param  array  $config
+     * @param  LoopInterface  $loop
+     * @param  CacheInterface  $cache
+     * @param  StorageInterface  $storageDriver
      * @return \BotMan\BotMan\BotMan
      */
     public function createForRTM(
@@ -36,11 +36,12 @@ class Factory
     /**
      * Create a new BotMan instance.
      *
-     * @param array $config
-     * @param RealTimeClient $client
-     * @param CacheInterface $cache
-     * @param StorageInterface $storageDriver
+     * @param  array  $config
+     * @param  RealTimeClient  $client
+     * @param  CacheInterface  $cache
+     * @param  StorageInterface  $storageDriver
      * @return BotMan
+     *
      * @internal param LoopInterface $loop
      */
     public function createUsingRTM(

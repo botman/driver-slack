@@ -2,12 +2,12 @@
 
 namespace BotMan\Drivers\Slack\Commands;
 
-use React\EventLoop\Factory;
-use Illuminate\Console\Command;
 use BotMan\BotMan\BotManFactory;
 use BotMan\BotMan\Cache\ArrayCache;
 use BotMan\BotMan\Drivers\DriverManager;
 use BotMan\Drivers\Slack\SlackRTMDriver;
+use Illuminate\Console\Command;
+use React\EventLoop\Factory;
 
 class SlackRTMListenCommand extends Command
 {

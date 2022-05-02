@@ -2,13 +2,13 @@
 
 namespace Tests;
 
-use Mockery as m;
 use BotMan\BotMan\BotMan;
-use React\EventLoop\Factory;
-use PHPUnit_Framework_TestCase;
 use BotMan\BotMan\BotManFactory;
 use BotMan\BotMan\Drivers\DriverManager;
 use BotMan\Drivers\Slack\SlackRTMDriver;
+use Mockery as m;
+use PHPUnit_Framework_TestCase;
+use React\EventLoop\Factory;
 
 class FactoryTest extends PHPUnit_Framework_TestCase
 {

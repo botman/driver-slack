@@ -2,16 +2,16 @@
 
 namespace Tests;
 
-use Slack\File;
-use Mockery as m;
-use Slack\RealTimeClient;
-use React\EventLoop\Factory;
-use PHPUnit_Framework_TestCase;
-use React\Promise\FulfilledPromise;
-use BotMan\Drivers\Slack\SlackRTMDriver;
-use BotMan\Drivers\Slack\Extensions\User;
 use BotMan\BotMan\Messages\Incoming\IncomingMessage;
-use BotMan\BotMan\Messages\Outgoing\OutgoingMessage as OutgoingMessage;
+use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
+use BotMan\Drivers\Slack\Extensions\User;
+use BotMan\Drivers\Slack\SlackRTMDriver;
+use Mockery as m;
+use PHPUnit_Framework_TestCase;
+use React\EventLoop\Factory;
+use React\Promise\FulfilledPromise;
+use Slack\File;
+use Slack\RealTimeClient;
 
 class SlackRTMDriverTest extends PHPUnit_Framework_TestCase
 {

@@ -2,24 +2,24 @@
 
 namespace BotMan\Drivers\Slack;
 
+use BotMan\BotMan\BotManFactory;
+use BotMan\BotMan\Drivers\Events\GenericEvent;
+use BotMan\BotMan\Interfaces\DriverEventInterface;
+use BotMan\BotMan\Interfaces\DriverInterface;
+use BotMan\BotMan\Messages\Attachments\Audio;
+use BotMan\BotMan\Messages\Attachments\File as BotManFile;
+use BotMan\BotMan\Messages\Attachments\Image;
+use BotMan\BotMan\Messages\Attachments\Video;
+use BotMan\BotMan\Messages\Incoming\Answer;
+use BotMan\BotMan\Messages\Incoming\IncomingMessage;
+use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
+use BotMan\BotMan\Messages\Outgoing\Question;
+use BotMan\Drivers\Slack\Extensions\User;
+use Illuminate\Support\Collection;
+use React\Promise\PromiseInterface;
 use Slack\File;
 use Slack\RealTimeClient;
 use Slack\User as SlackUser;
-use BotMan\BotMan\BotManFactory;
-use Illuminate\Support\Collection;
-use React\Promise\PromiseInterface;
-use BotMan\Drivers\Slack\Extensions\User;
-use BotMan\BotMan\Messages\Incoming\Answer;
-use BotMan\BotMan\Interfaces\DriverInterface;
-use BotMan\BotMan\Messages\Attachments\Audio;
-use BotMan\BotMan\Messages\Attachments\Image;
-use BotMan\BotMan\Messages\Attachments\Video;
-use BotMan\BotMan\Messages\Outgoing\Question;
-use BotMan\BotMan\Drivers\Events\GenericEvent;
-use BotMan\BotMan\Interfaces\DriverEventInterface;
-use BotMan\BotMan\Messages\Incoming\IncomingMessage;
-use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
-use BotMan\BotMan\Messages\Attachments\File as BotManFile;
 
 class SlackRTMDriver implements DriverInterface
 {
@@ -46,8 +46,9 @@ class SlackRTMDriver implements DriverInterface
 
     /**
      * Driver constructor.
-     * @param array $config
-     * @param RealTimeClient $client
+     *
+     * @param  array  $config
+     * @param  RealTimeClient  $client
      */
     public function __construct(array $config, RealTimeClient $client)
     {
@@ -82,6 +83,7 @@ class SlackRTMDriver implements DriverInterface
 
     /**
      * Returns the authenticated bot user ID.
+     *
      * @return string
      */
     public function getBotUserId()
@@ -91,6 +93,7 @@ class SlackRTMDriver implements DriverInterface
 
     /**
      * Returns the authenticated bot  ID.
+     *
      * @return string
      */
     public function getBotId()
@@ -123,8 +126,8 @@ class SlackRTMDriver implements DriverInterface
      */
     public function hasMatchingEvent()
     {
-        if (!empty($this->slackEventData)) {
-            list($type, $payload) = $this->slackEventData;
+        if (! empty($this->slackEventData)) {
+            [$type, $payload] = $this->slackEventData;
             $event = new GenericEvent($payload);
             $event->setName($type);
 
@@ -135,7 +138,7 @@ class SlackRTMDriver implements DriverInterface
     }
 
     /**
-     * @param  IncomingMessage $message
+     * @param  IncomingMessage  $message
      * @return Answer
      */
     public function getConversationAnswer(IncomingMessage $message)
@@ -146,7 +149,7 @@ class SlackRTMDriver implements DriverInterface
     /**
      * Convert a Question object into a valid Slack response.
      *
-     * @param \BotMan\BotMan\Messages\Outgoing\Question $question
+     * @param  \BotMan\BotMan\Messages\Outgoing\Question  $question
      * @return array
      */
     private function convertQuestion(Question $question)
@@ -240,9 +243,9 @@ class SlackRTMDriver implements DriverInterface
     }
 
     /**
-     * @param string|\BotMan\BotMan\Messages\Outgoing\Question|IncomingMessage $message
-     * @param IncomingMessage $matchingMessage
-     * @param array $additionalParameters
+     * @param  string|\BotMan\BotMan\Messages\Outgoing\Question|IncomingMessage  $message
+     * @param  IncomingMessage  $matchingMessage
+     * @param  array  $additionalParameters
      * @return mixed
      */
     public function buildServicePayload($message, $matchingMessage, $additionalParameters = [])
@@ -257,7 +260,7 @@ class SlackRTMDriver implements DriverInterface
         if ($message instanceof OutgoingMessage) {
             $parameters['text'] = $message->getText();
             $attachment = $message->getAttachment();
-            if (!is_null($attachment)) {
+            if (! is_null($attachment)) {
                 if ($attachment instanceof Image) {
                     $parameters['attachments'] = json_encode([
                         [
@@ -266,7 +269,7 @@ class SlackRTMDriver implements DriverInterface
                         ],
                     ]);
 
-                    // else check if is a path
+                // else check if is a path
                 } elseif ($attachment instanceof BotManFile && file_exists($attachment->getUrl())) {
                     $this->file = (new File())
                         ->setTitle(basename($attachment->getUrl()))
@@ -285,7 +288,7 @@ class SlackRTMDriver implements DriverInterface
     }
 
     /**
-     * @param mixed $payload
+     * @param  mixed  $payload
      * @return PromiseInterface
      */
     public function sendPayload($payload)
@@ -299,13 +302,13 @@ class SlackRTMDriver implements DriverInterface
 
     /**
      * @param $message
-     * @param array $additionalParameters
-     * @param IncomingMessage $matchingMessage
+     * @param  array  $additionalParameters
+     * @param  IncomingMessage  $matchingMessage
      * @return SlackRTMDriver
      */
     public function replyInThread($message, $additionalParameters, $matchingMessage)
     {
-        $additionalParameters['thread_ts'] = !empty($matchingMessage->getPayload()->get('thread_ts'))
+        $additionalParameters['thread_ts'] = ! empty($matchingMessage->getPayload()->get('thread_ts'))
             ? $matchingMessage->getPayload()->get('thread_ts')
             : $matchingMessage->getPayload()->get('ts');
 
@@ -317,12 +320,13 @@ class SlackRTMDriver implements DriverInterface
      */
     public function isConfigured()
     {
-        return !is_null($this->config->get('slack_token'));
+        return ! is_null($this->config->get('slack_token'));
     }
 
     /**
      * Send a typing indicator.
-     * @param IncomingMessage $matchingMessage
+     *
+     * @param  IncomingMessage  $matchingMessage
      * @return mixed
      */
     public function types(IncomingMessage $matchingMessage)
@@ -332,15 +336,16 @@ class SlackRTMDriver implements DriverInterface
             $channel = $_channel;
         });
 
-        if (!is_null($channel)) {
+        if (! is_null($channel)) {
             $this->client->setAsTyping($channel, false);
         }
     }
 
     /**
      * Send a typing indicator and wait for the given amount of seconds.
-     * @param IncomingMessage $matchingMessage
-     * @param float $seconds
+     *
+     * @param  IncomingMessage  $matchingMessage
+     * @param  float  $seconds
      * @return mixed
      */
     public function typesAndWaits(IncomingMessage $matchingMessage, float $seconds)
@@ -351,7 +356,8 @@ class SlackRTMDriver implements DriverInterface
 
     /**
      * Retrieve User information.
-     * @param IncomingMessage $matchingMessage
+     *
+     * @param  IncomingMessage  $matchingMessage
      * @return User
      */
     public function getUser(IncomingMessage $matchingMessage)
@@ -360,7 +366,7 @@ class SlackRTMDriver implements DriverInterface
         $this->client->getUserById($matchingMessage->getSender())->then(function ($_user) use (&$user) {
             $user = $_user;
         });
-        if (!is_null($user) && $user instanceof SlackUser) {
+        if (! is_null($user) && $user instanceof SlackUser) {
             return new User($this->client, $user->getRawUser());
         }
 
@@ -369,7 +375,8 @@ class SlackRTMDriver implements DriverInterface
 
     /**
      * Retrieve Channel information.
-     * @param IncomingMessage $matchingMessage
+     *
+     * @param  IncomingMessage  $matchingMessage
      * @return \Slack\Channel
      */
     public function getChannel(IncomingMessage $matchingMessage)
@@ -379,7 +386,8 @@ class SlackRTMDriver implements DriverInterface
 
     /**
      * Retrieve Channel, Group, or DM channel information.
-     * @param IncomingMessage $matchingMessage
+     *
+     * @param  IncomingMessage  $matchingMessage
      * @return \Slack\Channel|\Slack\Group|\Slack\DirectMessageChannel
      */
     public function getChannelGroupOrDM(IncomingMessage $matchingMessage)
@@ -399,8 +407,8 @@ class SlackRTMDriver implements DriverInterface
      * Low-level method to perform driver specific API requests.
      *
      * @param $endpoint
-     * @param array $parameters
-     * @param IncomingMessage $matchingMessage
+     * @param  array  $parameters
+     * @param  IncomingMessage  $matchingMessage
      * @return \React\Promise\PromiseInterface
      */
     public function sendRequest($endpoint, array $parameters, IncomingMessage $matchingMessage)
