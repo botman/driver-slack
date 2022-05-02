@@ -31,8 +31,7 @@ class Menu implements QuestionActionInterface
     protected $dataSource;
 
     /**
-     * @param string $text
-     *
+     * @param  string  $text
      * @return static
      */
     public static function create($text)
@@ -41,7 +40,7 @@ class Menu implements QuestionActionInterface
     }
 
     /**
-     * @param string $text
+     * @param  string  $text
      */
     public function __construct($text)
     {
@@ -51,7 +50,7 @@ class Menu implements QuestionActionInterface
     /**
      * Set the available menu options.
      *
-     * @param array $options
+     * @param  array  $options
      * @return $this
      */
     public function options(array $options)
@@ -64,7 +63,7 @@ class Menu implements QuestionActionInterface
     /**
      * Set the available menu option groups.
      *
-     * @param array $optionGroups
+     * @param  array  $optionGroups
      * @return $this
      */
     public function optionGroups(array $optionGroups)
@@ -77,7 +76,7 @@ class Menu implements QuestionActionInterface
     /**
      * Set the button value.
      *
-     * @param array $options
+     * @param  array  $options
      * @return $this
      */
     public function selectedOptions(array $options)
@@ -90,7 +89,7 @@ class Menu implements QuestionActionInterface
     /**
      * Set the button name (defaults to button text).
      *
-     * @param string $name
+     * @param  string  $name
      * @return $this
      */
     public function name($name)

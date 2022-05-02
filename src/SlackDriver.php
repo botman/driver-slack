@@ -3,22 +3,22 @@
 namespace BotMan\Drivers\Slack;
 
 use BotMan\BotMan\BotMan;
-use Illuminate\Support\Collection;
+use BotMan\BotMan\Drivers\Events\GenericEvent;
 use BotMan\BotMan\Drivers\HttpDriver;
-use BotMan\Drivers\Slack\Extensions\User;
-use BotMan\BotMan\Messages\Incoming\Answer;
-use BotMan\Drivers\Slack\Extensions\Dialog;
 use BotMan\BotMan\Interfaces\VerifiesService;
 use BotMan\BotMan\Messages\Attachments\Image;
-use BotMan\BotMan\Messages\Outgoing\Question;
-use Symfony\Component\HttpFoundation\Request;
-use BotMan\BotMan\Drivers\Events\GenericEvent;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\ParameterBag;
+use BotMan\BotMan\Messages\Conversations\Conversation;
+use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
-use BotMan\BotMan\Messages\Conversations\Conversation;
+use BotMan\BotMan\Messages\Outgoing\Question;
+use BotMan\Drivers\Slack\Extensions\Dialog;
+use BotMan\Drivers\Slack\Extensions\User;
+use Illuminate\Support\Collection;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class SlackDriver extends HttpDriver implements VerifiesService
 {
@@ -41,7 +41,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
     protected $messages = [];
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      */
     public function buildPayload(Request $request)
     {
@@ -112,7 +112,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
     }
 
     /**
-     * @param  \BotMan\BotMan\Messages\Incoming\IncomingMessage $message
+     * @param  \BotMan\BotMan\Messages\Incoming\IncomingMessage  $message
      * @return \BotMan\BotMan\Messages\Incoming\Answer
      */
     public function getConversationAnswer(IncomingMessage $message)
@@ -203,7 +203,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
     /**
      * Convert a Question object into a valid Slack response.
      *
-     * @param \BotMan\BotMan\Messages\Outgoing\Question $question
+     * @param  \BotMan\BotMan\Messages\Outgoing\Question  $question
      * @return array
      */
     private function convertQuestion(Question $question)
@@ -229,9 +229,9 @@ class SlackDriver extends HttpDriver implements VerifiesService
     }
 
     /**
-     * @param string|\BotMan\BotMan\Messages\Outgoing\Question $message
-     * @param IncomingMessage $matchingMessage
-     * @param array $additionalParameters
+     * @param  string|\BotMan\BotMan\Messages\Outgoing\Question  $message
+     * @param  IncomingMessage  $matchingMessage
+     * @param  array  $additionalParameters
      * @return array
      */
     public function buildServicePayload($message, $matchingMessage, $additionalParameters = [])
@@ -248,7 +248,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
     }
 
     /**
-     * @param mixed $payload
+     * @param  mixed  $payload
      * @return Response
      */
     public function sendPayload($payload)
@@ -264,8 +264,8 @@ class SlackDriver extends HttpDriver implements VerifiesService
 
     /**
      * @param $message
-     * @param array $additionalParameters
-     * @param \BotMan\BotMan\Messages\Incoming\IncomingMessage $matchingMessage
+     * @param  array  $additionalParameters
+     * @param  \BotMan\BotMan\Messages\Incoming\IncomingMessage  $matchingMessage
      * @return array
      */
     public function replyInThread($message, $additionalParameters, $matchingMessage, BotMan $bot)
@@ -281,8 +281,8 @@ class SlackDriver extends HttpDriver implements VerifiesService
 
     /**
      * @param $message
-     * @param array $additionalParameters
-     * @param \BotMan\BotMan\Messages\Incoming\IncomingMessage $matchingMessage
+     * @param  array  $additionalParameters
+     * @param  \BotMan\BotMan\Messages\Incoming\IncomingMessage  $matchingMessage
      * @return array
      */
     public function replyDialog(Dialog $dialog, $additionalParameters, $matchingMessage, BotMan $bot)
@@ -299,9 +299,9 @@ class SlackDriver extends HttpDriver implements VerifiesService
     }
 
     /**
-     * @param string|Question $message
-     * @param \BotMan\BotMan\Messages\Incoming\IncomingMessage $matchingMessage
-     * @param array $parameters
+     * @param  string|Question  $message
+     * @param  \BotMan\BotMan\Messages\Incoming\IncomingMessage  $matchingMessage
+     * @param  array  $parameters
      * @return array
      */
     protected function respondJSON($message, $matchingMessage, $parameters = [])
@@ -334,9 +334,9 @@ class SlackDriver extends HttpDriver implements VerifiesService
     }
 
     /**
-     * @param string|\BotMan\BotMan\Messages\Outgoing\Question|IncomingMessage $message
-     * @param \BotMan\BotMan\Messages\Incoming\IncomingMessage $matchingMessage
-     * @param array $additionalParameters
+     * @param  string|\BotMan\BotMan\Messages\Outgoing\Question|IncomingMessage  $message
+     * @param  \BotMan\BotMan\Messages\Incoming\IncomingMessage  $matchingMessage
+     * @param  array  $additionalParameters
      * @return array
      */
     protected function replyWithToken($message, $matchingMessage, $additionalParameters = [])
@@ -385,7 +385,8 @@ class SlackDriver extends HttpDriver implements VerifiesService
 
     /**
      * Retrieve User information.
-     * @param \BotMan\BotMan\Messages\Incoming\IncomingMessage $matchingMessage
+     *
+     * @param  \BotMan\BotMan\Messages\Incoming\IncomingMessage  $matchingMessage
      * @return User
      */
     public function getUser(IncomingMessage $matchingMessage)
@@ -405,9 +406,9 @@ class SlackDriver extends HttpDriver implements VerifiesService
     /**
      * Low-level method to perform driver specific API requests.
      *
-     * @param string $endpoint
-     * @param array $parameters
-     * @param IncomingMessage $matchingMessage
+     * @param  string  $endpoint
+     * @param  array  $parameters
+     * @param  IncomingMessage  $matchingMessage
      * @return Response
      */
     public function sendRequest($endpoint, array $parameters, IncomingMessage $matchingMessage)
@@ -420,7 +421,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
     }
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      * @return null|Response
      */
     public function verifyRequest(Request $request)
@@ -471,7 +472,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
         Conversation::macro('sendDialog', function (Dialog $dialog, $next, $additionalParameters = []) {
             $response = $this->bot->replyDialog($dialog, $additionalParameters);
 
-            $validation = function ($answer) use ($dialog, $next, $additionalParameters) {
+            $validation = function ($answer) use ($dialog, $next) {
                 $errors = $dialog->errors(Collection::make($answer->getValue()));
                 if (count($errors)) {
                     $this->bot->touchCurrentConversation();

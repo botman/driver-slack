@@ -2,8 +2,8 @@
 
 namespace BotMan\Drivers\Slack\Extensions;
 
-use Slack\User as SlackUser;
 use BotMan\BotMan\Interfaces\UserInterface;
+use Slack\User as SlackUser;
 
 class User extends SlackUser implements UserInterface
 {

@@ -21,7 +21,7 @@ abstract class Dialog
     /**
      * Validate the submitted form data.
      *
-     * @param Collection $submission
+     * @param  Collection  $submission
      * @return array
      */
     public function errors(Collection $submission)
@@ -37,10 +37,10 @@ abstract class Dialog
     abstract public function buildForm();
 
     /**
-     * @param string $label
-     * @param string $name
-     * @param string $type
-     * @param array $additional
+     * @param  string  $label
+     * @param  string  $name
+     * @param  string  $type
+     * @param  array  $additional
      * @return $this
      */
     public function add(string $label, string $name, string $type, array $additional = [])
@@ -55,10 +55,10 @@ abstract class Dialog
     }
 
     /**
-     * @param string $label
-     * @param string $name
-     * @param null $value
-     * @param array $additional
+     * @param  string  $label
+     * @param  string  $name
+     * @param  null  $value
+     * @param  array  $additional
      * @return Dialog
      */
     public function text(string $label, string $name, $value = null, $additional = [])
@@ -69,10 +69,10 @@ abstract class Dialog
     }
 
     /**
-     * @param string $label
-     * @param string $name
-     * @param null $value
-     * @param array $additional
+     * @param  string  $label
+     * @param  string  $name
+     * @param  null  $value
+     * @param  array  $additional
      * @return Dialog
      */
     public function textarea(string $label, string $name, $value = null, $additional = [])
@@ -83,10 +83,10 @@ abstract class Dialog
     }
 
     /**
-     * @param string $label
-     * @param string $name
-     * @param null $value
-     * @param array $additional
+     * @param  string  $label
+     * @param  string  $name
+     * @param  null  $value
+     * @param  array  $additional
      * @return Dialog
      */
     public function email(string $label, string $name, $value = null, $additional = [])
@@ -98,10 +98,10 @@ abstract class Dialog
     }
 
     /**
-     * @param string $label
-     * @param string $name
-     * @param null $value
-     * @param array $additional
+     * @param  string  $label
+     * @param  string  $name
+     * @param  null  $value
+     * @param  array  $additional
      * @return Dialog
      */
     public function number(string $label, string $name, $value = null, $additional = [])
@@ -113,10 +113,10 @@ abstract class Dialog
     }
 
     /**
-     * @param string $label
-     * @param string $name
-     * @param null $value
-     * @param array $additional
+     * @param  string  $label
+     * @param  string  $name
+     * @param  null  $value
+     * @param  array  $additional
      * @return Dialog
      */
     public function tel(string $label, string $name, $value = null, $additional = [])
@@ -128,10 +128,10 @@ abstract class Dialog
     }
 
     /**
-     * @param string $label
-     * @param string $name
-     * @param null $value
-     * @param array $additional
+     * @param  string  $label
+     * @param  string  $name
+     * @param  null  $value
+     * @param  array  $additional
      * @return Dialog
      */
     public function url(string $label, string $name, $value = null, $additional = [])

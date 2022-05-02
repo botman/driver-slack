@@ -2,11 +2,11 @@
 
 namespace BotMan\Drivers\Slack\Providers;
 
-use BotMan\Drivers\Slack\SlackDriver;
-use Illuminate\Support\ServiceProvider;
 use BotMan\BotMan\Drivers\DriverManager;
-use BotMan\Studio\Providers\StudioServiceProvider;
 use BotMan\Drivers\Slack\Commands\SlackRTMListenCommand;
+use BotMan\Drivers\Slack\SlackDriver;
+use BotMan\Studio\Providers\StudioServiceProvider;
+use Illuminate\Support\ServiceProvider;
 
 class SlackServiceProvider extends ServiceProvider
 {
