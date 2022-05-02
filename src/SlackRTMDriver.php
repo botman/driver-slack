@@ -123,7 +123,7 @@ class SlackRTMDriver implements DriverInterface
      */
     public function hasMatchingEvent()
     {
-        if (! empty($this->slackEventData)) {
+        if (!empty($this->slackEventData)) {
             list($type, $payload) = $this->slackEventData;
             $event = new GenericEvent($payload);
             $event->setName($type);
@@ -257,7 +257,7 @@ class SlackRTMDriver implements DriverInterface
         if ($message instanceof OutgoingMessage) {
             $parameters['text'] = $message->getText();
             $attachment = $message->getAttachment();
-            if (! is_null($attachment)) {
+            if (!is_null($attachment)) {
                 if ($attachment instanceof Image) {
                     $parameters['attachments'] = json_encode([
                         [
@@ -266,7 +266,7 @@ class SlackRTMDriver implements DriverInterface
                         ],
                     ]);
 
-                // else check if is a path
+                    // else check if is a path
                 } elseif ($attachment instanceof BotManFile && file_exists($attachment->getUrl())) {
                     $this->file = (new File())
                         ->setTitle(basename($attachment->getUrl()))
@@ -305,7 +305,7 @@ class SlackRTMDriver implements DriverInterface
      */
     public function replyInThread($message, $additionalParameters, $matchingMessage)
     {
-        $additionalParameters['thread_ts'] = ! empty($matchingMessage->getPayload()->get('thread_ts'))
+        $additionalParameters['thread_ts'] = !empty($matchingMessage->getPayload()->get('thread_ts'))
             ? $matchingMessage->getPayload()->get('thread_ts')
             : $matchingMessage->getPayload()->get('ts');
 
@@ -317,7 +317,7 @@ class SlackRTMDriver implements DriverInterface
      */
     public function isConfigured()
     {
-        return ! is_null($this->config->get('slack_token'));
+        return !is_null($this->config->get('slack_token'));
     }
 
     /**
@@ -332,9 +332,21 @@ class SlackRTMDriver implements DriverInterface
             $channel = $_channel;
         });
 
-        if (! is_null($channel)) {
+        if (!is_null($channel)) {
             $this->client->setAsTyping($channel, false);
         }
+    }
+
+    /**
+     * Send a typing indicator and wait for the given amount of seconds.
+     * @param IncomingMessage $matchingMessage
+     * @param float $seconds
+     * @return mixed
+     */
+    public function typesAndWaits(IncomingMessage $matchingMessage, float $seconds)
+    {
+        $this->types($matchingMessage);
+        usleep($seconds * 1000000);
     }
 
     /**
@@ -348,7 +360,7 @@ class SlackRTMDriver implements DriverInterface
         $this->client->getUserById($matchingMessage->getSender())->then(function ($_user) use (&$user) {
             $user = $_user;
         });
-        if (! is_null($user) && $user instanceof SlackUser) {
+        if (!is_null($user) && $user instanceof SlackUser) {
             return new User($this->client, $user->getRawUser());
         }
 

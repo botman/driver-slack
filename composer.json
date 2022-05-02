@@ -8,12 +8,10 @@
         "Slack"
     ],
     "homepage": "http://github.com/botman/driver-slack",
-    "authors": [
-        {
-            "name": "Marcel Pociot",
-            "email": "m.pociot@gmail.com"
-        }
-    ],
+    "authors": [{
+        "name": "Marcel Pociot",
+        "email": "m.pociot@gmail.com"
+    }],
     "require": {
         "php": ">=7.0",
         "botman/botman": "~2.1",
@@ -24,7 +22,7 @@
         "phpunit/phpunit": "~5.0",
         "illuminate/console": "~5.0",
         "illuminate/support": "~5.0",
-        "mockery/mockery": "dev-master",
+        "mockery/mockery": "^1.1",
         "ext-curl": "*"
     },
     "suggest": {
