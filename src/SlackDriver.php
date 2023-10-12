@@ -236,7 +236,15 @@ class SlackDriver extends HttpDriver implements VerifiesService
      */
     public function buildServicePayload($message, $matchingMessage, $additionalParameters = [])
     {
-        if (! Collection::make($matchingMessage->getPayload())->has('team_domain')) {
+        $matchingMessagePayload = $matchingMessage->getPayload();
+
+        // If the matching message is in a thread, reply there
+        $thread_ts = $matchingMessagePayload->get('thread_ts');
+        if (! empty($thread_ts)) {
+            $additionalParameters['thread_ts'] = $thread_ts;
+        }
+
+        if (! Collection::make($matchingMessagePayload)->has('team_domain')) {
             $this->resultType = self::RESULT_TOKEN;
             $payload = $this->replyWithToken($message, $matchingMessage, $additionalParameters);
         } else {
@@ -272,9 +280,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
      */
     public function replyInThread($message, $additionalParameters, $matchingMessage, BotMan $bot)
     {
-        $additionalParameters['thread_ts'] = ! empty($matchingMessage->getPayload()->get('thread_ts'))
-            ? $matchingMessage->getPayload()->get('thread_ts')
-            : $matchingMessage->getPayload()->get('ts');
+        $additionalParameters['thread_ts'] = $matchingMessage->getPayload()->get('ts');
 
         $payload = $this->buildServicePayload($message, $matchingMessage, $additionalParameters);
 
