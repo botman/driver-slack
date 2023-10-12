@@ -259,11 +259,13 @@ class SlackDriver extends HttpDriver implements VerifiesService
             return $this->http->post('https://slack.com/api/dialog.open', [], $payload);
         }
 
-        return JsonResponse::create($payload)->send();
+        $response = new JsonResponse($payload);
+
+        return $response->send();
     }
 
     /**
-     * @param $message
+     * @param  $message
      * @param  array  $additionalParameters
      * @param  \BotMan\BotMan\Messages\Incoming\IncomingMessage  $matchingMessage
      * @return array
@@ -280,7 +282,7 @@ class SlackDriver extends HttpDriver implements VerifiesService
     }
 
     /**
-     * @param $message
+     * @param  $message
      * @param  array  $additionalParameters
      * @param  \BotMan\BotMan\Messages\Incoming\IncomingMessage  $matchingMessage
      * @return array
@@ -428,7 +430,9 @@ class SlackDriver extends HttpDriver implements VerifiesService
     {
         $payload = Collection::make(json_decode($request->getContent(), true));
         if ($payload->get('type') === 'url_verification') {
-            return Response::create($payload->get('challenge'))->send();
+            $response = new Response($payload->get('challenge'));
+
+            return $response->send();
         }
     }
 
@@ -477,7 +481,9 @@ class SlackDriver extends HttpDriver implements VerifiesService
                 if (count($errors)) {
                     $this->bot->touchCurrentConversation();
 
-                    return Response::create(json_encode(['errors' => $errors]), 200, ['ContentType' => 'application/json'])->send();
+                    $responseObj = new Response(json_encode(['errors' => $errors]), 200, ['ContentType' => 'application/json']);
+
+                    return $responseObj->send();
                 } else {
                     if ($next instanceof \Closure) {
                         $next = $next->bindTo($this, $this);
