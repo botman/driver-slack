@@ -250,6 +250,12 @@ class SlackRTMDriver implements DriverInterface
      */
     public function buildServicePayload($message, $matchingMessage, $additionalParameters = [])
     {
+        // If the matching message is in a thread, reply there
+        $thread_ts = $matchingMessage->getPayload()->get('thread_ts');
+        if (! empty($thread_ts)) {
+            $additionalParameters['thread_ts'] = $thread_ts;
+        }
+
         $parameters = array_replace_recursive([
             'channel' => $matchingMessage->getRecipient() ?: $matchingMessage->getSender(),
             'as_user' => true,
@@ -269,7 +275,7 @@ class SlackRTMDriver implements DriverInterface
                         ],
                     ]);
 
-                // else check if is a path
+                    // else check if is a path
                 } elseif ($attachment instanceof BotManFile && file_exists($attachment->getUrl())) {
                     $this->file = (new File())
                         ->setTitle(basename($attachment->getUrl()))
@@ -301,16 +307,14 @@ class SlackRTMDriver implements DriverInterface
     }
 
     /**
-     * @param $message
+     * @param  $message
      * @param  array  $additionalParameters
      * @param  IncomingMessage  $matchingMessage
      * @return SlackRTMDriver
      */
     public function replyInThread($message, $additionalParameters, $matchingMessage)
     {
-        $additionalParameters['thread_ts'] = ! empty($matchingMessage->getPayload()->get('thread_ts'))
-            ? $matchingMessage->getPayload()->get('thread_ts')
-            : $matchingMessage->getPayload()->get('ts');
+        $additionalParameters['thread_ts'] = $matchingMessage->getPayload()->get('ts');
 
         return $this->reply($message, $matchingMessage, $additionalParameters);
     }
@@ -406,7 +410,7 @@ class SlackRTMDriver implements DriverInterface
     /**
      * Low-level method to perform driver specific API requests.
      *
-     * @param $endpoint
+     * @param  $endpoint
      * @param  array  $parameters
      * @param  IncomingMessage  $matchingMessage
      * @return \React\Promise\PromiseInterface
